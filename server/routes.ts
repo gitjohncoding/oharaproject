@@ -135,15 +135,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Received form data:", req.body);
       console.log("Received file:", req.file ? { name: req.file.filename, size: req.file.size, type: req.file.mimetype } : "No file");
 
-      // Validate form data
-      const submissionData = {
-        ...req.body,
+      // Simple validation test - let's see what we actually receive
+      console.log("Raw request body:", req.body);
+      console.log("Raw file:", req.file);
+      
+      // Basic required field check
+      if (!req.body.readerName || !req.body.email) {
+        return res.status(400).json({ message: "Reader name and email are required" });
+      }
+
+      // Create basic submission data
+      const validatedData = {
+        poemSlug: req.body.poemSlug || '',
+        readerName: req.body.readerName,
+        email: req.body.email,
+        location: req.body.location || null,
+        background: req.body.background || null,
+        interpretationNote: req.body.interpretationNote || null,
         anonymous: req.body.anonymous === 'true',
+        fileName: req.file.filename,
+        originalFileName: req.file.originalname,
+        fileSize: req.file.size,
+        mimeType: req.file.mimetype,
+        approvalToken: uuidv4(),
+        poemId: 0 // We'll set this below
       };
-
-      console.log("Processed submission data:", submissionData);
-
-      const validatedData = insertSubmissionSchema.parse(submissionData);
 
       // Get poem ID from slug
       const poem = await storage.getPoemBySlug(validatedData.poemSlug);
