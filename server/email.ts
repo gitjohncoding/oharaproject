@@ -29,7 +29,7 @@ class EmailService {
   private baseUrl: string;
 
   constructor() {
-    this.adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+    this.adminEmail = 'johntclinkscales@gmail.com';
     this.baseUrl = process.env.BASE_URL || 'http://localhost:5000';
     this.initializeTransporter();
   }
@@ -107,13 +107,9 @@ class EmailService {
           </div>
 
           <div style="text-align: center; margin-top: 30px;">
-            <a href="${approveUrl}" 
-               style="background-color: #28a745; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; margin-right: 10px; display: inline-block; font-weight: 600;">
-              ✅ APPROVE
-            </a>
-            <a href="${rejectUrl}" 
-               style="background-color: #dc3545; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 600;">
-              ❌ REJECT
+            <a href="${this.baseUrl}/admin" 
+               style="background-color: #2563eb; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 600;">
+              Go to Admin Panel
             </a>
           </div>
 

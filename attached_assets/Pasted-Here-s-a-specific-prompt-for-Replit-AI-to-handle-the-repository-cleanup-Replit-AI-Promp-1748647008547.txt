@@ -1,0 +1,88 @@
+Here's a specific prompt for Replit AI to handle the repository cleanup:
+
+---
+
+**Replit AI Prompt:**
+
+```
+I need to clean up my Git repository because it's too large for GitHub. Please help me:
+
+1. UPDATE .GITIGNORE FILE:
+Create or update the .gitignore file in the root directory with these entries:
+```
+# Dependencies
+node_modules/
+package-lock.json
+
+# Audio uploads - user-generated content
+uploads/
+*.mp3
+*.wav
+*.m4a
+
+# Generated files
+generated-icon.png
+attached_assets/
+
+# Environment files
+.env
+.env.local
+
+# Database files
+*.db
+*.sqlite
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+```
+
+2. REMOVE LARGE FILES FROM GIT TRACKING:
+Run these git commands to remove the large files from version control but keep them locally:
+- git rm -r --cached uploads/ (if it exists)
+- git rm -r --cached attached_assets/ (if it exists)
+- git rm --cached package-lock.json (if it exists)
+- git rm --cached generated-icon.png (if it exists)
+
+3. COMMIT THE CHANGES:
+- git add .gitignore
+- git commit -m "Clean up repository: update .gitignore and remove large files"
+
+4. ENSURE UPLOADS DIRECTORY WORKS:
+Make sure my server.js file has code to create the uploads directory if it doesn't exist:
+```javascript
+const fs = require('fs');
+const uploadDir = './uploads';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+```
+
+Please execute these steps in order and let me know if any commands fail or need adjustment. This is for a Frank O'Hara poetry project where users upload audio recordings.
+```
+
+---
+
+**Alternative Shorter Prompt (if the above is too long):**
+
+```
+Help me clean up my Git repo - it's too big for GitHub. Please:
+
+1. Update .gitignore to exclude: uploads/, attached_assets/, package-lock.json, generated-icon.png, *.mp3, *.wav, *.m4a, node_modules/, .env files
+
+2. Remove these large files from Git tracking (but keep locally): uploads/, attached_assets/, package-lock.json, generated-icon.png
+
+3. Commit changes with message "Clean up repository and update .gitignore"
+
+4. Make sure server.js creates uploads/ directory if missing
+
+This is for an audio upload poetry website. Execute the git commands and file updates for me.
+```
+
+---
+
+Both prompts will guide Replit AI to handle the cleanup systematically. Use the first one if you want more detailed explanations, or the second for a quicker approach. The AI should execute all the necessary git commands and file modifications for you.
