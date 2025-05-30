@@ -104,8 +104,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Submit new recording
-  app.post("/api/submissions", upload.single('audioFile'), async (req, res) => {
+  // Submit new recording  
+  app.post("/api/submissions", (req, res, next) => {
+    console.log("=== UPLOAD REQUEST STARTED ===");
+    upload.single('audioFile')(req, res, (err) => {
+      if (err) {
+        console.log("Multer error:", err);
+        return res.status(400).json({ message: err.message });
+      }
+      next();
+    });
+  }, async (req, res) => {
     try {
       console.log("=== UPLOAD REQUEST RECEIVED ===");
       console.log("Request body:", req.body);
