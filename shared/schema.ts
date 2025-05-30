@@ -57,6 +57,10 @@ export const insertSubmissionSchema = createInsertSchema(submissions).omit({
   reviewedAt: true,
 }).extend({
   poemSlug: z.string(),
+  location: z.string().optional().transform(val => val || undefined),
+  background: z.string().optional().transform(val => val || undefined),
+  interpretationNote: z.string().optional().transform(val => val || undefined),
+  anonymous: z.coerce.boolean(),
 });
 
 export const insertRecordingSchema = createInsertSchema(recordings).omit({
