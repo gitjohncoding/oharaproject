@@ -81,20 +81,24 @@ export default function PoemPage() {
           <h1 className="text-3xl md:text-4xl font-bold mb-4">{poem.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-primary-foreground/90">
             <span>Written in {poem.year}</span>
-            <span>•</span>
-            <a 
-              href={poem.externalLink} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="hover:text-primary-foreground transition-colors flex items-center gap-1"
-            >
-              Read full text <ExternalLink className="w-4 h-4" />
-            </a>
           </div>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Text Section */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold text-foreground mb-8">Text</h2>
+          <div className="text-center">
+            <a href={poem.externalLink} target="_blank" rel="noopener noreferrer">
+              <Button className="inline-flex items-center gap-2">
+                <ExternalLink className="w-4 h-4" />
+                Read Full Text
+              </Button>
+            </a>
+          </div>
+        </section>
+
         {/* Audio Recordings Section */}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-foreground mb-8">Recordings</h2>
