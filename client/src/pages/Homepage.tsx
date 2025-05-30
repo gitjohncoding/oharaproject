@@ -46,9 +46,9 @@ export default function Homepage() {
           <Card className="text-left mb-8 shadow-sm">
             <CardContent className="p-6 md:p-8">
               <div className="flex items-start space-x-4">
-                {/* Portrait placeholder - using a contemplative figure */}
+                {/* Frank O'Hara portrait */}
                 <img 
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150" 
+                  src="/attached_assets/image_1748641102249.png" 
                   alt="Frank O'Hara portrait" 
                   className="w-24 h-24 md:w-32 md:h-32 rounded-lg object-cover shadow-md flex-shrink-0" 
                 />
