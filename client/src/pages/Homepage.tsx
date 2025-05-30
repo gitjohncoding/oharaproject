@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalLink, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import type { Poem } from "@shared/schema";
+import Footer from "@/components/Footer";
 
 interface PoemStats {
   [slug: string]: number;
@@ -108,6 +109,7 @@ export default function Homepage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

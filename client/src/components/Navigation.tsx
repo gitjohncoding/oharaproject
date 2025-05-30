@@ -10,7 +10,6 @@ export default function Navigation() {
 
   const navItems = [
     { href: "/", label: "Home" },
-    { href: "/admin", label: "Admin" },
   ];
 
   return (

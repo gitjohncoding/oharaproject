@@ -29,7 +29,7 @@ class EmailService {
   private baseUrl: string;
 
   constructor() {
-    this.adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+    this.adminEmail = 'johntclinkscales@gmail.com';
     this.baseUrl = process.env.BASE_URL || 'http://localhost:5000';
     this.initializeTransporter();
   }

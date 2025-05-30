@@ -419,7 +419,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Manual approve/reject for admin interface
-  app.post("/api/admin/submissions/:id/approve", async (req, res) => {
+  app.post("/api/admin/submissions/:id/approve", isAdminUser, async (req, res) => {
     try {
       const submissionId = parseInt(req.params.id);
       const submission = await storage.getSubmissions().then(subs => 
@@ -452,7 +452,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/submissions/:id/reject", async (req, res) => {
+  app.post("/api/admin/submissions/:id/reject", isAdminUser, async (req, res) => {
     try {
       const submissionId = parseInt(req.params.id);
       const submission = await storage.getSubmissions().then(subs => 
