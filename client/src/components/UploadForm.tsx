@@ -83,6 +83,9 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
         console.log("Full error response:", error);
         if (error.errors) {
           console.log("Validation errors:", error.errors);
+          error.errors.forEach((err: any, index: number) => {
+            console.log(`Error ${index + 1}:`, err);
+          });
         }
         throw new Error(error.message || "Upload failed");
       }
