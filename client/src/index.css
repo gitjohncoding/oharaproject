@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 210 11% 98%; /* #F5F7FA */
+  --foreground: 210 24% 16%; /* #2C3E50 */
+  --muted: 210 11% 98%; /* #F5F7FA */
+  --muted-foreground: 217 20% 60%; /* #8B9DC3 */
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 24% 16%; /* #2C3E50 */
+  --card: 0 0% 100%;
+  --card-foreground: 210 24% 16%; /* #2C3E50 */
+  --border: 217 32% 91%; /* lighter version of #8B9DC3 */
+  --input: 217 32% 91%;
+  --primary: 207 90% 54%; /* #4A90E2 */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 11% 98%; /* #F5F7FA */
+  --secondary-foreground: 210 24% 16%; /* #2C3E50 */
+  --accent: 210 11% 98%; /* #F5F7FA */
+  --accent-foreground: 210 24% 16%; /* #2C3E50 */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 207 90% 54%; /* #4A90E2 */
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: 210 24% 16%; /* #2C3E50 */
+  --foreground: 0 0% 98%;
+  --muted: 210 24% 12%;
+  --muted-foreground: 217 20% 60%; /* #8B9DC3 */
+  --popover: 210 24% 16%;
+  --popover-foreground: 0 0% 98%;
+  --card: 210 24% 16%;
+  --card-foreground: 0 0% 98%;
+  --border: 217 20% 30%;
+  --input: 217 20% 30%;
+  --primary: 207 90% 54%; /* #4A90E2 */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 24% 12%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 210 24% 12%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 207 90% 54%;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+}
+
+@layer components {
+  .audio-player {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  }
+  
+  .upload-zone {
+    border: 2px dashed hsl(var(--muted-foreground));
+    transition: all 0.3s ease;
+  }
+  
+  .upload-zone:hover {
+    border-color: hsl(var(--primary));
+    background-color: hsl(var(--primary) / 0.05);
+  }
+  
+  .upload-zone.drag-over {
+    border-color: hsl(var(--primary));
+    background-color: hsl(var(--primary) / 0.1);
+  }
+
+  .prose-frank {
+    @apply prose prose-neutral dark:prose-invert max-w-none;
+  }
+
+  .prose-frank h1,
+  .prose-frank h2,
+  .prose-frank h3 {
+    @apply text-foreground;
+  }
+
+  .prose-frank p {
+    @apply text-muted-foreground;
+  }
+
+  .prose-frank a {
+    @apply text-primary hover:text-primary/80;
+  }
+}
+
+/* Custom audio player styles */
+audio::-webkit-media-controls-panel {
+  background-color: hsl(var(--card));
+}
+
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+  color: hsl(var(--foreground));
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .prose-frank {
+    @apply text-sm;
+  }
+  
+  audio {
+    @apply w-full;
+  }
+}
+
+/* Touch-friendly buttons */
+@media (pointer: coarse) {
+  button, .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
