@@ -48,6 +48,12 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Add logging middleware
+  app.use('/api/submissions', (req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+  });
+
   // Serve uploaded files
   app.use('/uploads', (req, res, next) => {
     // Add CORS headers for audio files

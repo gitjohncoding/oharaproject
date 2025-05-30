@@ -80,6 +80,10 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
 
       if (!response.ok) {
         const error = await response.json();
+        console.log("Full error response:", error);
+        if (error.errors) {
+          console.log("Validation errors:", error.errors);
+        }
         throw new Error(error.message || "Upload failed");
       }
 
