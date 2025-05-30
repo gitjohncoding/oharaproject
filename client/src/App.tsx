@@ -14,10 +14,10 @@ function Router() {
     <>
       <Navigation />
       <Switch>
-        <Route path="/" component={Homepage} />
+        <Route path="/" component={TestHomepage} />
         <Route path="/poems/:slug" component={PoemPage} />
         <Route path="/admin" component={AdminPage} />
-        <Route component={NotFound} />
+        <Route path="*" component={NotFound} />
       </Switch>
     </>
   );
