@@ -14,7 +14,7 @@ function Router() {
     <>
       <Navigation />
       <Switch>
-        <Route path="/" component={TestHomepage} />
+        <Route path="/" component={Homepage} />
         <Route path="/poems/:slug" component={PoemPage} />
         <Route path="/admin" component={AdminPage} />
         <Route path="*" component={NotFound} />
