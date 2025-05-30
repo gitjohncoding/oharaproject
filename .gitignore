@@ -1,33 +1,6 @@
-# Dependencies
-node_modules/
-package-lock.json
-
-# Audio uploads - these are user-generated content
-uploads/
-*.mp3
-*.wav
-*.m4a
-
-# Generated files
-generated-icon.png
-attached_assets/
-
-# Environment files
-.env
-.env.local
-
-# Database files
-*.db
-*.sqlite
-
-# Logs
-*.log
-npm-debug.log*
-
-# OS generated files
+node_modules
+dist
 .DS_Store
-Thumbs.db
-
-# Replit specific
-.replit
-.config/
+server/public
+vite.config.ts.*
+*.tar.gz

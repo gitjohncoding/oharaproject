@@ -3,7 +3,6 @@ import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { emailService } from "./email";
-import { setupAuth, isAuthenticated, isAdminUser } from "./replitAuth";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -49,24 +48,6 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
-
-  // Auth routes - this endpoint should return null if not authenticated, not 401
-  app.get('/api/auth/user', async (req: any, res) => {
-    try {
-      if (!req.isAuthenticated() || !req.user?.claims?.sub) {
-        return res.json(null);
-      }
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
-
   // Add logging middleware
   app.use('/api/submissions', (req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
@@ -245,7 +226,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin routes
   
   // Get admin stats
-  app.get("/api/admin/stats", isAdminUser, async (req, res) => {
+  app.get("/api/admin/stats", async (req, res) => {
     try {
       const allSubmissions = await storage.getSubmissions();
       const stats = {
@@ -261,7 +242,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get pending submissions
-  app.get("/api/admin/submissions/pending", isAdminUser, async (req, res) => {
+  app.get("/api/admin/submissions/pending", async (req, res) => {
     try {
       const pendingSubmissions = await storage.getSubmissionsByStatus('pending');
       const poems = await storage.getPoems();
@@ -422,7 +403,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Manual approve/reject for admin interface
-  app.post("/api/admin/submissions/:id/approve", isAdminUser, async (req, res) => {
+  app.post("/api/admin/submissions/:id/approve", async (req, res) => {
     try {
       const submissionId = parseInt(req.params.id);
       const submission = await storage.getSubmissions().then(subs => 
@@ -455,7 +436,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/submissions/:id/reject", isAdminUser, async (req, res) => {
+  app.post("/api/admin/submissions/:id/reject", async (req, res) => {
     try {
       const submissionId = parseInt(req.params.id);
       const submission = await storage.getSubmissions().then(subs => 

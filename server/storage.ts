@@ -1,6 +1,4 @@
-import { poems, submissions, recordings, users, type Poem, type Submission, type Recording, type User, type UpsertUser, type InsertPoem, type InsertSubmission, type InsertRecording } from "@shared/schema";
-import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { poems, submissions, recordings, type Poem, type Submission, type Recording, type InsertPoem, type InsertSubmission, type InsertRecording } from "@shared/schema";
 
 export interface IStorage {
   // Poems
@@ -20,95 +18,148 @@ export interface IStorage {
   getRecordingsByPoemId(poemId: number): Promise<Recording[]>;
   createRecording(recording: InsertRecording): Promise<Recording>;
   deleteRecording(id: number): Promise<boolean>;
-  
-  // Users (for authentication)
-  getUser(id: string): Promise<User | undefined>;
-  upsertUser(user: UpsertUser): Promise<User>;
 }
 
-export class DatabaseStorage implements IStorage {
-  // User operations (required for Replit Auth)
-  async getUser(id: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+export class MemStorage implements IStorage {
+  private poems: Map<number, Poem>;
+  private submissions: Map<number, Submission>;
+  private recordings: Map<number, Recording>;
+  private currentPoemId: number;
+  private currentSubmissionId: number;
+  private currentRecordingId: number;
+
+  constructor() {
+    this.poems = new Map();
+    this.submissions = new Map();
+    this.recordings = new Map();
+    this.currentPoemId = 1;
+    this.currentSubmissionId = 1;
+    this.currentRecordingId = 1;
+    
+    // Initialize with the two poems
+    this.initializePoems();
   }
 
-  async upsertUser(userData: UpsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(userData)
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
-          ...userData,
-          updatedAt: new Date(),
-        },
-      })
-      .returning();
-    return user;
+  private initializePoems() {
+    const initialPoems: InsertPoem[] = [
+      {
+        title: "Having a Coke With You",
+        slug: "having-a-coke-with-you",
+        year: 1960,
+        externalLink: "https://poets.org/poem/having-coke-you",
+        context: "A love poem that captures an intimate moment of urban life"
+      },
+      {
+        title: "Ave Maria",
+        slug: "ave-maria",
+        year: 1960,
+        externalLink: "https://www.poetryfoundation.org/poems/42670/ave-maria",
+        context: "A playful poem about movies, mothers, and growing up"
+      }
+    ];
+
+    initialPoems.forEach(poem => {
+      const id = this.currentPoemId++;
+      this.poems.set(id, { ...poem, id });
+    });
   }
 
-  // Poem operations
   async getPoems(): Promise<Poem[]> {
-    return await db.select().from(poems);
+    return Array.from(this.poems.values());
   }
 
   async getPoemBySlug(slug: string): Promise<Poem | undefined> {
-    const [poem] = await db.select().from(poems).where(eq(poems.slug, slug));
-    return poem;
+    return Array.from(this.poems.values()).find(poem => poem.slug === slug);
   }
 
   async createPoem(insertPoem: InsertPoem): Promise<Poem> {
-    const [poem] = await db.insert(poems).values(insertPoem).returning();
+    const id = this.currentPoemId++;
+    const poem: Poem = { ...insertPoem, id };
+    this.poems.set(id, poem);
     return poem;
   }
 
-  // Submission operations
   async getSubmissions(): Promise<Submission[]> {
-    return await db.select().from(submissions);
+    return Array.from(this.submissions.values());
   }
 
   async getSubmissionsByStatus(status: string): Promise<Submission[]> {
-    return await db.select().from(submissions).where(eq(submissions.status, status));
+    return Array.from(this.submissions.values()).filter(sub => sub.status === status);
   }
 
   async getSubmissionByToken(token: string): Promise<Submission | undefined> {
-    const [submission] = await db.select().from(submissions).where(eq(submissions.approvalToken, token));
-    return submission;
+    return Array.from(this.submissions.values()).find(sub => sub.approvalToken === token);
   }
 
   async createSubmission(insertSubmission: InsertSubmission): Promise<Submission> {
-    const [submission] = await db.insert(submissions).values(insertSubmission).returning();
+    const id = this.currentSubmissionId++;
+    const submission: Submission = {
+      poemId: insertSubmission.poemId,
+      readerName: insertSubmission.readerName,
+      email: insertSubmission.email,
+      location: insertSubmission.location || null,
+      background: insertSubmission.background || null,
+      interpretationNote: insertSubmission.interpretationNote || null,
+      anonymous: insertSubmission.anonymous || false,
+      fileName: insertSubmission.fileName,
+      originalFileName: insertSubmission.originalFileName,
+      fileSize: insertSubmission.fileSize,
+      mimeType: insertSubmission.mimeType,
+      approvalToken: insertSubmission.approvalToken,
+      id,
+      status: "pending",
+      submittedAt: new Date(),
+      reviewedAt: null
+    };
+    this.submissions.set(id, submission);
     return submission;
   }
 
   async updateSubmissionStatus(id: number, status: string, reviewedAt?: Date): Promise<Submission | undefined> {
-    const [submission] = await db
-      .update(submissions)
-      .set({ status, reviewedAt: reviewedAt || new Date() })
-      .where(eq(submissions.id, id))
-      .returning();
-    return submission;
+    const submission = this.submissions.get(id);
+    if (!submission) return undefined;
+
+    const updated: Submission = {
+      ...submission,
+      status,
+      reviewedAt: reviewedAt || new Date()
+    };
+    this.submissions.set(id, updated);
+    return updated;
   }
 
-  // Recording operations
   async getRecordings(): Promise<Recording[]> {
-    return await db.select().from(recordings);
+    return Array.from(this.recordings.values());
   }
 
   async getRecordingsByPoemId(poemId: number): Promise<Recording[]> {
-    return await db.select().from(recordings).where(eq(recordings.poemId, poemId));
+    return Array.from(this.recordings.values()).filter(rec => rec.poemId === poemId);
   }
 
   async createRecording(insertRecording: InsertRecording): Promise<Recording> {
-    const [recording] = await db.insert(recordings).values(insertRecording).returning();
+    const id = this.currentRecordingId++;
+    const recording: Recording = {
+      poemId: insertRecording.poemId,
+      submissionId: insertRecording.submissionId,
+      readerName: insertRecording.readerName,
+      location: insertRecording.location || null,
+      background: insertRecording.background || null,
+      interpretationNote: insertRecording.interpretationNote || null,
+      anonymous: insertRecording.anonymous || false,
+      fileName: insertRecording.fileName,
+      originalFileName: insertRecording.originalFileName,
+      fileSize: insertRecording.fileSize,
+      mimeType: insertRecording.mimeType,
+      id,
+      approvedAt: new Date()
+    };
+    this.recordings.set(id, recording);
     return recording;
   }
 
   async deleteRecording(id: number): Promise<boolean> {
-    const result = await db.delete(recordings).where(eq(recordings.id, id));
-    return result.rowCount > 0;
+    return this.recordings.delete(id);
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();

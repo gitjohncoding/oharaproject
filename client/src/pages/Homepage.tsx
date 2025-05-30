@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { PoemCard } from "@/components/PoemCard";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ExternalLink, ArrowRight } from "lucide-react";
+import { Link } from "wouter";
 import type { Poem } from "@shared/schema";
-import Footer from "@/components/Footer";
 
 interface PoemStats {
   [slug: string]: number;
 }
 
 export default function Homepage() {
-  const { data: poems, isLoading: poemsLoading, error: poemsError } = useQuery<Poem[]>({
+  const { data: poems, isLoading: poemsLoading } = useQuery<Poem[]>({
     queryKey: ["/api/poems"],
   });
 
@@ -18,67 +18,25 @@ export default function Homepage() {
     queryKey: ["/api/poems/stats"],
   });
 
-  if (poemsLoading || statsLoading) {
+  if (poemsLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              <span className="text-primary">Voices</span> for Frank O'Hara
-            </h1>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              This project celebrates the poetry of Frank O'Hara through the diverse voices of readers from around the world. Upload your own reading of his poems and discover how different interpretations bring new life to his words.
-            </p>
-          </div>
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-8">Current Poems</h2>
-          </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <Card key={i} className="animate-pulse">
-                <CardContent className="p-6">
-                  <Skeleton className="h-6 w-3/4 mb-3" />
-                  <Skeleton className="h-4 w-1/4 mb-4" />
-                  <Skeleton className="h-20 w-full mb-4" />
-                  <Skeleton className="h-4 w-1/2" />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (poemsError) {
-    return (
-      <div className="min-h-screen bg-background">
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              <span className="text-primary">Voices</span> for Frank O'Hara
-            </h1>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              This project celebrates the poetry of Frank O'Hara through the diverse voices of readers from around the world. Upload your own reading of his poems and discover how different interpretations bring new life to his words.
-            </p>
-          </div>
-          <div className="text-center">
-            <p className="text-muted-foreground">Unable to load poems at this time. Please try again later.</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center mb-12">
+          <Skeleton className="h-12 w-96 mx-auto mb-6" />
+          <Skeleton className="h-6 w-full max-w-4xl mx-auto mb-4" />
+          <Skeleton className="h-6 w-3/4 mx-auto" />
+        </div>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
+    <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Hero Section */}
+      <section className="text-center mb-12">
+        <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            <span className="text-primary">Voices</span> for Frank O'Hara
+            <span className="text-primary">Voices</span> <span className="text-foreground">for Frank O'Hara</span>
           </h1>
           <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
             This project celebrates the poetry of Frank O'Hara through the diverse voices of readers from around the world. Upload your own reading of his poems and discover how different interpretations bring new life to his words.
@@ -104,25 +62,52 @@ export default function Homepage() {
             </CardContent>
           </Card>
         </div>
+      </section>
 
-        {/* Current Poems Section */}
-        <section className="mb-12">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold text-foreground">Current Poems</h2>
-          </div>
+      {/* Current Poems Section */}
+      <section className="mb-12">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl font-semibold text-foreground mb-8 text-center">Current Poems</h2>
           
           <div className="grid md:grid-cols-2 gap-6">
             {poems?.map((poem) => (
-              <PoemCard 
-                key={poem.id} 
-                poem={poem} 
-                recordingCount={stats?.[poem.slug] || 0} 
-              />
+              <Card key={poem.id} className="hover:shadow-md transition-shadow group">
+                <CardContent className="p-6">
+                  <div className="cursor-pointer" onClick={() => window.location.href = `/poems/${poem.slug}`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
+                        {poem.title}
+                      </h3>
+                      <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
+                    <p className="text-muted-foreground mb-4">Written in {poem.year}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                      "{poem.context}"
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-primary font-medium">
+                      {statsLoading ? (
+                        <Skeleton className="h-4 w-20" />
+                      ) : (
+                        `${stats?.[poem.slug] || 0} recordings`
+                      )}
+                    </span>
+                    <a 
+                      href={poem.externalLink}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                    >
+                      Read full text <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
-        </section>
-      </main>
-      <Footer />
-    </div>
+        </div>
+      </section>
+    </main>
   );
 }
