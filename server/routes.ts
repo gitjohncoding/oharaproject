@@ -35,10 +35,13 @@ const upload = multer({
     fileSize: 15 * 1024 * 1024, // 15MB max
   },
   fileFilter: (req, file, cb) => {
+    console.log("File filter check - file type:", file.mimetype);
     const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/x-m4a'];
     if (allowedTypes.includes(file.mimetype)) {
+      console.log("File type accepted");
       cb(null, true);
     } else {
+      console.log("File type rejected:", file.mimetype);
       cb(new Error('Invalid file type. Only MP3, WAV, and M4A files are allowed.'));
     }
   }

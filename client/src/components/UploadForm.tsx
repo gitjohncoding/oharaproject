@@ -68,9 +68,10 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
       });
 
       // Log what's in the FormData
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-      }
+      console.log("FormData contents:");
+      formData.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+      });
 
       const response = await fetch("/api/submissions", {
         method: "POST",
