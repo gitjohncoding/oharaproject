@@ -92,12 +92,14 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
   });
 
   const handleFileSelect = (file: File) => {
+    console.log("File selected:", file.name, file.type, file.size);
+    
     // Validate file type
     const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/x-m4a'];
     if (!allowedTypes.includes(file.type)) {
       toast({
         title: "Invalid File Type",
-        description: "Please upload an MP3, WAV, or M4A file.",
+        description: `File type "${file.type}" not supported. Please upload an MP3, WAV, or M4A file.`,
         variant: "destructive",
       });
       return;
@@ -114,6 +116,10 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
     }
 
     setSelectedFile(file);
+    toast({
+      title: "File Selected",
+      description: `${file.name} is ready to upload.`,
+    });
   };
 
   const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,20 +131,39 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
 
   const handleDragOver = (event: React.DragEvent) => {
     event.preventDefault();
+    event.stopPropagation();
     setDragOver(true);
   };
 
-  const handleDragLeave = () => {
-    setDragOver(false);
+  const handleDragEnter = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragOver(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    // Only set dragOver to false if we're leaving the drop zone completely
+    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+      setDragOver(false);
+    }
   };
 
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault();
+    event.stopPropagation();
     setDragOver(false);
+    
+    console.log("Drop event triggered");
+    console.log("Files:", event.dataTransfer.files);
     
     const file = event.dataTransfer.files[0];
     if (file) {
+      console.log("Processing dropped file:", file.name);
       handleFileSelect(file);
+    } else {
+      console.log("No file found in drop event");
     }
   };
 
@@ -166,6 +191,7 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
                 dragOver ? 'drag-over' : ''
               }`}
               onDragOver={handleDragOver}
+              onDragEnter={handleDragEnter}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
             >
