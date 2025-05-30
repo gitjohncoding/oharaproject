@@ -71,9 +71,9 @@ export default function Homepage() {
           
           <div className="grid md:grid-cols-2 gap-6">
             {poems?.map((poem) => (
-              <Link key={poem.id} href={`/poems/${poem.slug}`}>
-                <Card className="hover:shadow-md transition-shadow cursor-pointer group">
-                  <CardContent className="p-6">
+              <Card key={poem.id} className="hover:shadow-md transition-shadow group">
+                <CardContent className="p-6">
+                  <div className="cursor-pointer" onClick={() => window.location.href = `/poems/${poem.slug}`}>
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
                         {poem.title}
@@ -84,27 +84,26 @@ export default function Homepage() {
                     <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                       "{poem.context}"
                     </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-primary font-medium">
-                        {statsLoading ? (
-                          <Skeleton className="h-4 w-20" />
-                        ) : (
-                          `${stats?.[poem.slug] || 0} recordings`
-                        )}
-                      </span>
-                      <a 
-                        href={poem.externalLink}
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        Read full text <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-primary font-medium">
+                      {statsLoading ? (
+                        <Skeleton className="h-4 w-20" />
+                      ) : (
+                        `${stats?.[poem.slug] || 0} recordings`
+                      )}
+                    </span>
+                    <a 
+                      href={poem.externalLink}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                    >
+                      Read full text <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
