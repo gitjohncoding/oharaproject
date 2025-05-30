@@ -108,11 +108,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Audio file is required" });
       }
 
+      // Log received data for debugging
+      console.log("Received form data:", req.body);
+      console.log("Received file:", req.file ? { name: req.file.filename, size: req.file.size, type: req.file.mimetype } : "No file");
+
       // Validate form data
       const submissionData = {
         ...req.body,
         anonymous: req.body.anonymous === 'true',
       };
+
+      console.log("Processed submission data:", submissionData);
 
       const validatedData = insertSubmissionSchema.parse(submissionData);
 
@@ -166,6 +172,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
         return res.status(400).json({ 
           message: "Invalid form data",
           errors: error.errors
