@@ -162,4 +162,68 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+
+export class DatabaseStorage implements IStorage {
+  async getPoems(): Promise<Poem[]> {
+    return await db.select().from(poems);
+  }
+
+  async getPoemBySlug(slug: string): Promise<Poem | undefined> {
+    const [poem] = await db.select().from(poems).where(eq(poems.slug, slug));
+    return poem || undefined;
+  }
+
+  async createPoem(insertPoem: InsertPoem): Promise<Poem> {
+    const [poem] = await db.insert(poems).values(insertPoem).returning();
+    return poem;
+  }
+
+  async getSubmissions(): Promise<Submission[]> {
+    return await db.select().from(submissions);
+  }
+
+  async getSubmissionsByStatus(status: string): Promise<Submission[]> {
+    return await db.select().from(submissions).where(eq(submissions.status, status));
+  }
+
+  async getSubmissionByToken(token: string): Promise<Submission | undefined> {
+    const [submission] = await db.select().from(submissions).where(eq(submissions.approvalToken, token));
+    return submission || undefined;
+  }
+
+  async createSubmission(insertSubmission: InsertSubmission): Promise<Submission> {
+    const [submission] = await db.insert(submissions).values(insertSubmission).returning();
+    return submission;
+  }
+
+  async updateSubmissionStatus(id: number, status: string, reviewedAt?: Date): Promise<Submission | undefined> {
+    const [submission] = await db
+      .update(submissions)
+      .set({ status, reviewedAt })
+      .where(eq(submissions.id, id))
+      .returning();
+    return submission || undefined;
+  }
+
+  async getRecordings(): Promise<Recording[]> {
+    return await db.select().from(recordings);
+  }
+
+  async getRecordingsByPoemId(poemId: number): Promise<Recording[]> {
+    return await db.select().from(recordings).where(eq(recordings.poemId, poemId));
+  }
+
+  async createRecording(insertRecording: InsertRecording): Promise<Recording> {
+    const [recording] = await db.insert(recordings).values(insertRecording).returning();
+    return recording;
+  }
+
+  async deleteRecording(id: number): Promise<boolean> {
+    const result = await db.delete(recordings).where(eq(recordings.id, id));
+    return result.rowCount > 0;
+  }
+}
+
+export const storage = new DatabaseStorage();
