@@ -480,6 +480,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Ensure root path serves the React app (fallback for development)
+  app.get('/', (req, res, next) => {
+    // Let Vite handle this in development
+    next();
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
