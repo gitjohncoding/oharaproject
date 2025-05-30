@@ -1,0 +1,127 @@
+# Frank O'Hara Poetry Archive - Replit Development Prompt
+
+## Project Request for Replit AI
+
+I need you to build a community-driven poetry website where users can upload audio recordings of themselves reading Frank O'Hara poems. This must be **fully mobile responsive** and work perfectly on phones, tablets, and desktop.
+
+## Core Requirements
+
+### 1. Site Structure
+Create a **Node.js/Express** web application with these pages:
+- **Homepage**: Project introduction and navigation to poems
+- **Individual poem pages** for "Having a Coke With You" and "Ave Maria"
+- **Simple admin interface** for content moderation
+
+### 2. Design Specifications
+- **Modern, clean aesthetic** similar to Claude AI's interface
+- **Color palette**: Use soft blues (#4A90E2), warm grays (#F5F7FA, #8B9DC3), and deep charcoal (#2C3E50) for text
+- **Typography**: Clean sans-serif fonts (Inter or similar)
+- **Fully responsive design** - must work flawlessly on mobile devices
+- **Accessible design** following basic WCAG guidelines
+
+### 3. Homepage Requirements
+Include this content (you can refine the copy):
+```
+# Voices for Frank O'Hara
+
+This project celebrates the poetry of Frank O'Hara through the diverse voices of readers from around the world. Upload your own reading of his poems and discover how different interpretations bring new life to his words.
+
+Frank O'Hara (1926-1966) was a key figure in the New York School of poetry, known for his conversational style and intimate observations of daily life. His poems capture moments of connection, art, and urban experience with remarkable immediacy and warmth.
+
+## Current Poems:
+- Having a Coke With You
+- Ave Maria
+```
+
+**Navigation requirement**: The poem titles above must be **clickable links** that navigate to their respective individual poem pages. Style these links to be visually prominent and easy to tap on mobile devices.
+
+### 4. Individual Poem Pages
+Each poem page needs:
+- **Poem title and year written**
+- **Link to external poem text** (I'll provide URLs)
+- **Audio recordings section** displaying approved submissions
+- **Upload form** for new recordings
+- **HTML5 audio player** for each recording with clean controls
+
+### 5. Audio Upload System
+Create a form with these fields:
+- **File upload** (accept MP3, WAV, M4A files, max 15MB)
+- **Reader name** (required, with checkbox for "Submit anonymously")
+- **Email** (required, for moderation - not displayed publicly)
+- **Location** (optional text field)
+- **Background/Age** (optional text field)
+- **Interpretation note** (optional textarea - "Tell us about your reading")
+- **Terms agreement** checkbox
+
+### 6. Content Moderation System
+**Critical requirement**: All uploads must be approved before appearing on site.
+
+**Email notification system**:
+- When someone uploads, send email notification to admin
+- Email should include all submission details and audio file link
+- Include two buttons/links in email:
+  - **"APPROVE"** - clicking adds content to live site
+  - **"REJECT"** - clicking deletes submission
+- No login required - use secure tokens in URLs
+
+### 7. Technical Requirements
+- **Database**: SQLite for simplicity (store submissions, approval status, metadata)
+- **File storage**: Local file system with organized folder structure
+- **Email service**: Use a service like SendGrid or Nodemailer with Gmail
+- **Security**: Input sanitization, file type validation, secure token generation
+- **Performance**: Optimize for mobile loading speeds
+
+### 8. Audio Player Requirements
+- Clean HTML5 audio controls
+- Show reader name (or "Anonymous Reader")
+- Show upload date
+- Display optional reader note below player
+- Optional location/background info if provided
+- Playlist functionality to play multiple readings in sequence
+
+### 9. File Specifications
+- **Audio formats**: MP3, WAV, M4A only
+- **Max file size**: 15MB
+- **Max recording length**: 10 minutes
+- **File naming**: Automatic renaming with timestamps and poem titles
+
+### 10. Admin Features Needed
+- **Simple admin page** to view pending submissions
+- **Backup approval interface** (in case email links don't work)
+- **Ability to delete approved content** if needed
+- **Basic analytics**: total submissions, approved vs rejected
+
+## Initial Poem Data
+
+### Poem 1: "Having a Coke With You"
+- **Year**: 1960
+- **External link**: https://poets.org/poem/having-coke-you
+- **Context**: "A love poem that captures an intimate moment of urban life"
+
+### Poem 2: "Ave Maria"
+- **Year**: 1960  
+- **External link**: https://www.poetryfoundation.org/poems/42670/ave-maria
+- **Context**: "A playful poem about movies, mothers, and growing up"
+
+## Environment Variables Needed
+Set up configuration for:
+- `EMAIL_SERVICE` (for notifications)
+- `ADMIN_EMAIL` (where notifications go)
+- `BASE_URL` (for approval/rejection links)
+- `SECRET_KEY` (for secure tokens)
+
+## Mobile Responsiveness Requirements
+- **Navigation** must work with touch interfaces
+- **Audio players** must function properly on iOS and Android
+- **File upload** must work on mobile browsers
+- **Forms** must be easy to use on small screens
+- **Text** must be readable without zooming
+- **Buttons** must be appropriately sized for touch
+
+## Deployment Notes
+- Include instructions for setting up email notifications
+- Provide sample environment variables
+- Include basic documentation for adding new poems
+- Ensure all dependencies are properly listed
+
+Please create a complete, working application with all these features. The code should be production-ready with proper error handling, security measures, and clear documentation.
