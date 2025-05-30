@@ -33,9 +33,59 @@ export default function AdminPage() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   
-  // Move hooks before any conditional returns
+  // ALL hooks must be at the top before any conditional returns
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const { data: stats, isLoading: statsLoading } = useQuery<AdminStats>({
+    queryKey: ["/api/admin/stats"],
+    enabled: isAuthenticated,
+  });
+
+  const { data: pendingSubmissions, isLoading: submissionsLoading } = useQuery<PendingSubmission[]>({
+    queryKey: ["/api/admin/submissions/pending"],
+    enabled: isAuthenticated,
+  });
+
+  const approveMutation = useMutation({
+    mutationFn: (submissionId: number) => 
+      apiRequest("POST", `/api/admin/submissions/${submissionId}/approve`),
+    onSuccess: () => {
+      toast({
+        title: "Submission Approved",
+        description: "The recording has been approved and is now live.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/submissions/pending"] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to approve submission. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: (submissionId: number) => 
+      apiRequest("POST", `/api/admin/submissions/${submissionId}/reject`),
+    onSuccess: () => {
+      toast({
+        title: "Submission Rejected",
+        description: "The recording has been rejected and removed.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/submissions/pending"] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to reject submission. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,54 +131,6 @@ export default function AdminPage() {
       </div>
     );
   }
-
-  const { data: stats, isLoading: statsLoading } = useQuery<AdminStats>({
-    queryKey: ["/api/admin/stats"],
-  });
-
-  const { data: pendingSubmissions, isLoading: submissionsLoading } = useQuery<PendingSubmission[]>({
-    queryKey: ["/api/admin/submissions/pending"],
-  });
-
-  const approveMutation = useMutation({
-    mutationFn: (submissionId: number) => 
-      apiRequest("POST", `/api/admin/submissions/${submissionId}/approve`),
-    onSuccess: () => {
-      toast({
-        title: "Submission Approved",
-        description: "The recording has been approved and is now live.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/submissions/pending"] });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to approve submission. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const rejectMutation = useMutation({
-    mutationFn: (submissionId: number) => 
-      apiRequest("POST", `/api/admin/submissions/${submissionId}/reject`),
-    onSuccess: () => {
-      toast({
-        title: "Submission Rejected",
-        description: "The recording has been rejected and removed.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/submissions/pending"] });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to reject submission. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
 
   return (
     <div className="min-h-screen bg-background">
