@@ -53,7 +53,7 @@ class EmailService {
         emailConfig.secure = process.env.EMAIL_SECURE === 'true';
       }
 
-      this.transporter = nodemailer.createTransporter(emailConfig);
+      this.transporter = nodemailer.createTransport(emailConfig);
     } catch (error) {
       console.error('Failed to initialize email transporter:', error);
     }

@@ -94,7 +94,18 @@ export class MemStorage implements IStorage {
   async createSubmission(insertSubmission: InsertSubmission): Promise<Submission> {
     const id = this.currentSubmissionId++;
     const submission: Submission = {
-      ...insertSubmission,
+      poemId: insertSubmission.poemId,
+      readerName: insertSubmission.readerName,
+      email: insertSubmission.email,
+      location: insertSubmission.location || null,
+      background: insertSubmission.background || null,
+      interpretationNote: insertSubmission.interpretationNote || null,
+      anonymous: insertSubmission.anonymous || false,
+      fileName: insertSubmission.fileName,
+      originalFileName: insertSubmission.originalFileName,
+      fileSize: insertSubmission.fileSize,
+      mimeType: insertSubmission.mimeType,
+      approvalToken: insertSubmission.approvalToken,
       id,
       status: "pending",
       submittedAt: new Date(),
@@ -128,7 +139,17 @@ export class MemStorage implements IStorage {
   async createRecording(insertRecording: InsertRecording): Promise<Recording> {
     const id = this.currentRecordingId++;
     const recording: Recording = {
-      ...insertRecording,
+      poemId: insertRecording.poemId,
+      submissionId: insertRecording.submissionId,
+      readerName: insertRecording.readerName,
+      location: insertRecording.location || null,
+      background: insertRecording.background || null,
+      interpretationNote: insertRecording.interpretationNote || null,
+      anonymous: insertRecording.anonymous || false,
+      fileName: insertRecording.fileName,
+      originalFileName: insertRecording.originalFileName,
+      fileSize: insertRecording.fileSize,
+      mimeType: insertRecording.mimeType,
       id,
       approvedAt: new Date()
     };

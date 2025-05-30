@@ -1,4 +1,5 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { emailService } from "./email";
@@ -50,7 +51,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
-  }, require('express').static(uploadsDir));
+  }, express.static(uploadsDir));
 
   // Get all poems
   app.get("/api/poems", async (req, res) => {
@@ -252,11 +253,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         mimeType: submission.mimeType,
       });
 
+      // Get poem title for confirmation email
+      const poem = await storage.getPoems().then(poems => 
+        poems.find(p => p.id === submission.poemId)
+      );
+      
       // Send approval confirmation email
       await emailService.sendApprovalConfirmation(
         submission.email,
         submission.readerName,
-        await storage.getPoemBySlug(req.params.slug).then(p => p?.title || 'Unknown Poem')
+        poem?.title || 'Unknown Poem'
       );
 
       res.send(`

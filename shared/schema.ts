@@ -53,7 +53,6 @@ export const insertPoemSchema = createInsertSchema(poems).omit({
 export const insertSubmissionSchema = createInsertSchema(submissions).omit({
   id: true,
   status: true,
-  approvalToken: true,
   submittedAt: true,
   reviewedAt: true,
 }).extend({
