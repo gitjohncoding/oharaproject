@@ -37,21 +37,12 @@ class EmailService {
   private initializeTransporter() {
     try {
       const emailConfig: EmailConfig = {
+        service: 'gmail',
         auth: {
-          user: process.env.EMAIL_USER || '',
-          pass: process.env.EMAIL_PASS || ''
+          user: 'johntclinkscales@gmail.com',
+          pass: process.env.GMAIL_APP_PASSWORD!
         }
       };
-
-      // Use Gmail if specified
-      if (process.env.EMAIL_SERVICE === 'gmail') {
-        emailConfig.service = 'gmail';
-      } else {
-        // Use custom SMTP settings
-        emailConfig.host = process.env.EMAIL_HOST || 'smtp.gmail.com';
-        emailConfig.port = parseInt(process.env.EMAIL_PORT || '587');
-        emailConfig.secure = process.env.EMAIL_SECURE === 'true';
-      }
 
       this.transporter = nodemailer.createTransport(emailConfig);
     } catch (error) {
