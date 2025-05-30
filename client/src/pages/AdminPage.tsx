@@ -32,6 +32,10 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  
+  // Move hooks before any conditional returns
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,8 +81,6 @@ export default function AdminPage() {
       </div>
     );
   }
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   const { data: stats, isLoading: statsLoading } = useQuery<AdminStats>({
     queryKey: ["/api/admin/stats"],
