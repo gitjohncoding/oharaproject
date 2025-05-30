@@ -53,6 +53,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   }, express.static(uploadsDir));
 
+  // Serve attached assets
+  const attachedAssetsDir = path.join(process.cwd(), "attached_assets");
+  if (fs.existsSync(attachedAssetsDir)) {
+    app.use('/attached_assets', express.static(attachedAssetsDir));
+  }
+
   // Get all poems
   app.get("/api/poems", async (req, res) => {
     try {
