@@ -19,8 +19,8 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/">
-              <h1 className="text-xl font-semibold text-foreground cursor-pointer">
-                <span className="text-primary">Voices</span> for Frank O'Hara
+              <h1 className="text-xl font-semibold cursor-pointer">
+                <span className="text-primary">Voices</span> <span className="text-foreground">for Frank O'Hara</span>
               </h1>
             </Link>
           </div>

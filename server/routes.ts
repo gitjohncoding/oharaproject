@@ -63,22 +63,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get poem by slug with recordings
-  app.get("/api/poems/:slug", async (req, res) => {
-    try {
-      const poem = await storage.getPoemBySlug(req.params.slug);
-      if (!poem) {
-        return res.status(404).json({ message: "Poem not found" });
-      }
-
-      const recordings = await storage.getRecordingsByPoemId(poem.id);
-      res.json({ poem, recordings });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch poem" });
-    }
-  });
-
-  // Get recording counts for all poems
+  // Get recording counts for all poems (must come before /:slug route)
   app.get("/api/poems/stats", async (req, res) => {
     try {
       const poems = await storage.getPoems();
@@ -92,6 +77,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(stats);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch poem stats" });
+    }
+  });
+
+  // Get poem by slug with recordings
+  app.get("/api/poems/:slug", async (req, res) => {
+    try {
+      const poem = await storage.getPoemBySlug(req.params.slug);
+      if (!poem) {
+        return res.status(404).json({ message: "Poem not found" });
+      }
+
+      const recordings = await storage.getRecordingsByPoemId(poem.id);
+      res.json({ poem, recordings });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch poem" });
     }
   });
 
