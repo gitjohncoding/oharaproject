@@ -57,9 +57,20 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
       const formData = new FormData();
       formData.append("audioFile", selectedFile);
       formData.append("poemSlug", poemSlug);
+      
+      console.log("Form data being sent:", data);
+      console.log("Selected file:", selectedFile);
+      console.log("Poem slug:", poemSlug);
+      
       Object.entries(data).forEach(([key, value]) => {
+        console.log(`Adding to FormData: ${key} = ${value}`);
         formData.append(key, value.toString());
       });
+
+      // Log what's in the FormData
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
 
       const response = await fetch("/api/submissions", {
         method: "POST",

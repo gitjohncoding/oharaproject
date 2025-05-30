@@ -104,7 +104,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit new recording
   app.post("/api/submissions", upload.single('audioFile'), async (req, res) => {
     try {
+      console.log("=== UPLOAD REQUEST RECEIVED ===");
+      console.log("Request body:", req.body);
+      console.log("Request file:", req.file);
+      
       if (!req.file) {
+        console.log("No file received");
         return res.status(400).json({ message: "Audio file is required" });
       }
 
