@@ -1,4 +1,6 @@
-import { poems, submissions, recordings, type Poem, type Submission, type Recording, type InsertPoem, type InsertSubmission, type InsertRecording } from "@shared/schema";
+import { poems, submissions, recordings, users, type Poem, type Submission, type Recording, type User, type UpsertUser, type InsertPoem, type InsertSubmission, type InsertRecording } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // Poems
@@ -18,6 +20,10 @@ export interface IStorage {
   getRecordingsByPoemId(poemId: number): Promise<Recording[]>;
   createRecording(recording: InsertRecording): Promise<Recording>;
   deleteRecording(id: number): Promise<boolean>;
+  
+  // Users (for authentication)
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
 }
 
 export class MemStorage implements IStorage {
