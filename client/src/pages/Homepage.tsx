@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalLink, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
-import { PoemCard } from "@/components/PoemCard";
+import { EnhancedPoemCard } from "@/components/EnhancedPoemCard";
 import { PoetFavoriteButton } from "@/components/PoetFavoriteButton";
 import type { Poem } from "@shared/schema";
 
@@ -35,12 +35,12 @@ export default function Homepage() {
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
-      <section className="text-center mb-12">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            <span className="text-primary">WeRead</span> <span className="text-foreground">Frank O'Hara</span>
+      <section className="poetry-hero text-center mb-12">
+        <div className="max-w-4xl mx-auto relative z-10">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-white">
+            <span className="text-white">WeRead</span> <span className="text-white/90">Frank O'Hara</span>
           </h1>
-          <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+          <p className="text-lg text-white/80 mb-8 leading-relaxed">
             This project celebrates the poetry of Frank O'Hara through diverse readers from around the world. Upload your own reading of his poems and discover how different interpretations bring new life to his words.
           </p>
           
@@ -76,10 +76,11 @@ export default function Homepage() {
           
           <div className="grid md:grid-cols-2 gap-6">
             {poems?.map((poem) => (
-              <PoemCard 
+              <EnhancedPoemCard 
                 key={poem.id} 
                 poem={poem} 
-                recordingCount={statsLoading ? 0 : (stats?.[poem.slug] || 0)} 
+                recordingCount={statsLoading ? 0 : (stats?.[poem.slug] || 0)}
+                showFavorite={true}
               />
             ))}
           </div>
