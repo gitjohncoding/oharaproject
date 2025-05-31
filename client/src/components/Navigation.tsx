@@ -52,7 +52,7 @@ export default function Navigation() {
                   <div className="flex items-center space-x-2">
                     <User className="h-4 w-4" />
                     <span className="text-sm font-medium">
-                      {user.firstName || user.email || 'User'}
+                      {(user as any)?.firstName || (user as any)?.email || 'User'}
                     </span>
                   </div>
                   <Button
@@ -111,7 +111,7 @@ export default function Navigation() {
                         <div className="flex items-center space-x-2 px-3 py-2 bg-muted rounded">
                           <User className="h-4 w-4" />
                           <span className="text-sm font-medium">
-                            {user.firstName || user.email || 'User'}
+                            {(user as any)?.firstName || (user as any)?.email || 'User'}
                           </span>
                         </div>
                         <Button
