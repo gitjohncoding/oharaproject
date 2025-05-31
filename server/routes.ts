@@ -465,6 +465,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Favorites API endpoints
+  app.get('/api/favorites', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const favorites = await storage.getFavoritesByUserId(userId);
+      res.json(favorites);
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
+      res.status(500).json({ message: "Failed to fetch favorites" });
+    }
+  });
+
+  app.post('/api/favorites/:recordingId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const recordingId = parseInt(req.params.recordingId);
+      
+      if (isNaN(recordingId)) {
+        return res.status(400).json({ message: "Invalid recording ID" });
+      }
+
+      // Check if already favorited
+      const isFavorited = await storage.isFavorited(userId, recordingId);
+      if (isFavorited) {
+        return res.status(409).json({ message: "Recording already in favorites" });
+      }
+
+      const favorite = await storage.addFavorite(userId, recordingId);
+      res.json(favorite);
+    } catch (error) {
+      console.error("Error adding favorite:", error);
+      res.status(500).json({ message: "Failed to add favorite" });
+    }
+  });
+
+  app.delete('/api/favorites/:recordingId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const recordingId = parseInt(req.params.recordingId);
+      
+      if (isNaN(recordingId)) {
+        return res.status(400).json({ message: "Invalid recording ID" });
+      }
+
+      const removed = await storage.removeFavorite(userId, recordingId);
+      if (!removed) {
+        return res.status(404).json({ message: "Favorite not found" });
+      }
+
+      res.json({ message: "Favorite removed successfully" });
+    } catch (error) {
+      console.error("Error removing favorite:", error);
+      res.status(500).json({ message: "Failed to remove favorite" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
