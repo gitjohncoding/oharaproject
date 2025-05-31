@@ -1,6 +1,10 @@
-import { poems, submissions, recordings, favorites, type Poem, type Submission, type Recording, type Favorite, type InsertPoem, type InsertSubmission, type InsertRecording, type InsertFavorite } from "@shared/schema";
+import { poems, submissions, recordings, favorites, users, type Poem, type Submission, type Recording, type Favorite, type User, type UpsertUser, type InsertPoem, type InsertSubmission, type InsertRecording, type InsertFavorite } from "@shared/schema";
 
 export interface IStorage {
+  // User operations (mandatory for Replit Auth)
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
+  
   // Poems
   getPoems(): Promise<Poem[]>;
   getPoemBySlug(slug: string): Promise<Poem | undefined>;
@@ -44,6 +48,15 @@ export class MemStorage implements IStorage {
     
     // Initialize with the two poems
     this.initializePoems();
+  }
+
+  // User operations (stub methods for interface compliance)
+  async getUser(id: string): Promise<User | undefined> {
+    return undefined;
+  }
+
+  async upsertUser(user: UpsertUser): Promise<User> {
+    throw new Error("MemStorage users not implemented");
   }
 
   private initializePoems() {
@@ -189,6 +202,27 @@ import { db } from "./db";
 import { eq, and } from "drizzle-orm";
 
 export class DatabaseStorage implements IStorage {
+  // User operations (mandatory for Replit Auth)
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
+  }
+
   async getPoems(): Promise<Poem[]> {
     return await db.select().from(poems);
   }
