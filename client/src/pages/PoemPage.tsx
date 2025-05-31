@@ -82,7 +82,7 @@ export default function PoemPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                <span className="text-primary">WeRead</span> <span className="text-primary-foreground">"{poem.title}"</span>
+                <span className="text-primary-foreground">WeRead</span> <span className="text-primary-foreground">"{poem.title}"</span>
               </h1>
               <div className="flex flex-wrap items-center gap-4 text-primary-foreground/90">
                 <span>Written in {poem.year}</span>
