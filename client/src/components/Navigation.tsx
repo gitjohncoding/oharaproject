@@ -26,7 +26,7 @@ export default function Navigation() {
           <div className="flex items-center">
             <Link href="/">
               <h1 className="text-xl font-semibold cursor-pointer">
-                <span className="text-primary">Voices</span> <span className="text-foreground">for Frank O'Hara</span>
+                <span className="text-primary">WeRead</span> <span className="text-foreground">Frank O'Hara</span>
               </h1>
             </Link>
           </div>
