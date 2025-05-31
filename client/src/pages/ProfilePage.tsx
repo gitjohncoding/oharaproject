@@ -52,7 +52,7 @@ export default function ProfilePage() {
   const favoriteRecordings = favorites?.map(favorite => {
     const recording = recordings?.find(r => r.id === favorite.recordingId);
     return recording;
-  }).filter(Boolean) || [];
+  }).filter(Boolean) as Recording[] || [];
 
   return (
     <div className="min-h-screen bg-background">

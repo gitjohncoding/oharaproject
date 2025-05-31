@@ -99,6 +99,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all recordings
+  app.get("/api/recordings", async (req, res) => {
+    try {
+      const recordings = await storage.getRecordings();
+      res.json(recordings);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch recordings" });
+    }
+  });
+
   // Get poem by slug with recordings
   app.get("/api/poems/:slug", async (req, res) => {
     try {
