@@ -1,6 +1,7 @@
+import { useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Share2, Heart } from "lucide-react";
+import { Share2, Heart, Play, Pause, RotateCcw, Volume2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +17,10 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   // Check if recording is favorited
   const { data: recordingFavorites } = useQuery({
@@ -145,6 +150,46 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
     });
   };
 
+  // Audio control functions
+  const togglePlayPause = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+    }
+  };
+
+  const handleReplay = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+    }
+  };
+
+  const handlePlay = () => setIsPlaying(true);
+  const handlePause = () => setIsPlaying(false);
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
   return (
     <Card className="audio-player shadow-sm">
       <CardContent className="p-6">
@@ -192,15 +237,93 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
           </div>
         </div>
         
-        {/* HTML5 Audio Player */}
-        <audio 
-          controls 
-          className="w-full mb-4"
-          preload="metadata"
-        >
-          <source src={`/uploads/${recording.fileName}`} type={recording.mimeType} />
-          Your browser does not support the audio element.
-        </audio>
+        {/* Enhanced Audio Player */}
+        <div className="space-y-4">
+          {/* Hidden HTML5 Audio Element */}
+          <audio 
+            ref={audioRef}
+            preload="metadata"
+            onTimeUpdate={handleTimeUpdate}
+            onLoadedMetadata={handleLoadedMetadata}
+            onPlay={handlePlay}
+            onPause={handlePause}
+            className="hidden"
+          >
+            <source src={`/uploads/${recording.fileName}`} type={recording.mimeType} />
+            Your browser does not support the audio element.
+          </audio>
+
+          {/* Custom Audio Controls */}
+          <div className="bg-gradient-to-r from-primary/5 to-blue-50 dark:to-blue-950/20 rounded-lg p-4">
+            {/* Progress Bar */}
+            <div className="w-full bg-muted rounded-full h-2 mb-4 cursor-pointer"
+                 onClick={(e) => {
+                   const rect = e.currentTarget.getBoundingClientRect();
+                   const percent = (e.clientX - rect.left) / rect.width;
+                   if (audioRef.current) {
+                     audioRef.current.currentTime = percent * duration;
+                   }
+                 }}>
+              <div 
+                className="bg-primary h-2 rounded-full transition-all duration-200" 
+                style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+              />
+            </div>
+
+            {/* Control Buttons and Time Display */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                {/* Play/Pause Button */}
+                <Button
+                  variant="default"
+                  size="lg"
+                  onClick={togglePlayPause}
+                  className="w-12 h-12 rounded-full flex-shrink-0 touch-manipulation"
+                >
+                  {isPlaying ? (
+                    <Pause className="w-5 h-5" />
+                  ) : (
+                    <Play className="w-5 h-5 ml-0.5" />
+                  )}
+                  <span className="sr-only">
+                    {isPlaying ? 'Pause' : 'Play'}
+                  </span>
+                </Button>
+
+                {/* Replay Button */}
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={handleReplay}
+                  className="w-12 h-12 rounded-full flex-shrink-0 touch-manipulation hover:bg-primary/10"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span className="sr-only">Replay from beginning</span>
+                </Button>
+
+                {/* Volume Indicator */}
+                <div className="hidden sm:flex items-center space-x-2 text-muted-foreground">
+                  <Volume2 className="w-4 h-4" />
+                  <span className="text-sm">Audio</span>
+                </div>
+              </div>
+
+              {/* Time Display */}
+              <div className="text-sm text-muted-foreground font-mono">
+                <span>{formatTime(currentTime)}</span>
+                <span className="mx-1">/</span>
+                <span>{formatTime(duration)}</span>
+              </div>
+            </div>
+
+            {/* Mobile-Friendly Additional Controls */}
+            <div className="sm:hidden mt-3 flex justify-center">
+              <div className="text-xs text-muted-foreground text-center">
+                Tap progress bar to skip • Large touch targets for easy control
+              </div>
+            </div>
+          </div>
+        </div>
         
         {recording.interpretationNote && (
           <div className="interpretation-note">

@@ -360,6 +360,17 @@ audio::-webkit-media-controls-time-remaining-display {
   .interpretation-note::before {
     @apply text-lg -top-1;
   }
+
+  /* Enhanced audio player mobile optimizations */
+  .audio-player .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .audio-player button {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 @media (max-width: 768px) {
