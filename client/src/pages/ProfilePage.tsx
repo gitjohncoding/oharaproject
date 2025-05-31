@@ -91,12 +91,7 @@ export default function ProfilePage() {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Heart className="h-5 w-5 text-red-500" />
-                <span>Frank O'Hara</span>
-                {poetFavorite && (
-                  <span className="text-sm text-muted-foreground font-normal">
-                    (Favorited)
-                  </span>
-                )}
+                <span>My Favorite Poets</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
