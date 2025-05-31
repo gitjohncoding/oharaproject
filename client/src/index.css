@@ -23,6 +23,29 @@
   --destructive-foreground: 0 0% 100%;
   --ring: 207 90% 54%; /* #4A90E2 */
   --radius: 0.75rem;
+  
+  /* Extended spacing scale */
+  --spacing-xs: 0.25rem;  /* 4px */
+  --spacing-sm: 0.5rem;   /* 8px */
+  --spacing-md: 1rem;     /* 16px */
+  --spacing-lg: 1.5rem;   /* 24px */
+  --spacing-xl: 2rem;     /* 32px */
+  --spacing-2xl: 3rem;    /* 48px */
+  
+  /* Typography scale */
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  
+  /* Audio player specific */
+  --audio-height: 3rem;   /* 48px */
+  --audio-radius: 0.5rem; /* 8px */
+  
+  /* Upload zone */
+  --upload-min-height: 8rem; /* 128px */
 }
 
 .dark {
@@ -56,49 +79,130 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
     font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold;
+  /* Typography hierarchy */
+  h1 {
+    @apply text-3xl md:text-4xl font-bold leading-tight tracking-tight;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl font-semibold leading-tight;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl font-semibold leading-snug;
+  }
+  
+  h4, h5, h6 {
+    @apply text-lg font-semibold leading-normal;
+  }
+
+  /* Body text improvements */
+  p {
+    @apply leading-relaxed;
+  }
+
+  /* Focus states for accessibility */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
 }
 
 @layer components {
+  /* Audio player enhancements */
   .audio-player {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: var(--audio-radius);
+    min-height: var(--audio-height);
+    @apply shadow-sm border border-border;
   }
   
+  .audio-controls {
+    @apply flex items-center gap-3 p-4;
+  }
+  
+  /* Upload zone improvements */
   .upload-zone {
     border: 2px dashed hsl(var(--muted-foreground));
-    transition: all 0.3s ease;
+    border-radius: var(--radius);
+    min-height: var(--upload-min-height);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    @apply flex flex-col items-center justify-center p-6 text-center;
   }
   
   .upload-zone:hover {
     border-color: hsl(var(--primary));
     background-color: hsl(var(--primary) / 0.05);
+    transform: translateY(-1px);
   }
   
   .upload-zone.drag-over {
     border-color: hsl(var(--primary));
     background-color: hsl(var(--primary) / 0.1);
+    transform: scale(1.02);
   }
 
+  /* Poetry content styling */
   .prose-frank {
     @apply prose prose-neutral dark:prose-invert max-w-none;
+    line-height: 1.8;
   }
 
   .prose-frank h1,
   .prose-frank h2,
   .prose-frank h3 {
     @apply text-foreground;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   }
 
   .prose-frank p {
-    @apply text-muted-foreground;
+    @apply text-muted-foreground leading-relaxed;
   }
 
   .prose-frank a {
-    @apply text-primary hover:text-primary/80;
+    @apply text-primary hover:text-primary/80 transition-colors;
+    text-decoration: none;
+    border-bottom: 1px solid hsl(var(--primary) / 0.3);
+  }
+
+  .prose-frank a:hover {
+    border-bottom-color: hsl(var(--primary));
+  }
+
+  /* Favorite button animations */
+  .favorite-button {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  .favorite-button:hover {
+    @apply scale-110;
+  }
+
+  .favorite-button.favorited {
+    @apply text-red-500;
+    animation: favorite-pulse 0.3s ease-in-out;
+  }
+
+  /* Card enhancements */
+  .poem-card {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .poem-card:hover {
+    @apply shadow-lg -translate-y-1;
+  }
+
+  /* Loading states */
+  .loading-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 }
 
@@ -112,20 +216,83 @@ audio::-webkit-media-controls-time-remaining-display {
   color: hsl(var(--foreground));
 }
 
-/* Mobile optimizations */
-@media (max-width: 768px) {
+/* Keyframe animations */
+@keyframes favorite-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 640px) {
+  :root {
+    --spacing-lg: 1rem;
+    --spacing-xl: 1.5rem;
+    --spacing-2xl: 2rem;
+  }
+  
   .prose-frank {
-    @apply text-sm;
+    @apply text-sm leading-relaxed;
   }
   
   audio {
     @apply w-full;
   }
+  
+  .upload-zone {
+    min-height: 6rem;
+    @apply p-4;
+  }
+  
+  h1 {
+    @apply text-2xl md:text-3xl;
+  }
 }
 
-/* Touch-friendly buttons */
+@media (max-width: 768px) {
+  .audio-player {
+    @apply mx-2;
+  }
+  
+  .poem-card:hover {
+    @apply shadow-md translate-y-0;
+  }
+}
+
+/* Touch-friendly interactions */
 @media (pointer: coarse) {
-  button, .touch-target {
+  button, .touch-target, .favorite-button {
     @apply min-h-[44px] min-w-[44px];
+  }
+  
+  .upload-zone:hover {
+    transform: none;
+  }
+  
+  .poem-card:hover {
+    transform: none;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  html {
+    scroll-behavior: auto;
   }
 }
