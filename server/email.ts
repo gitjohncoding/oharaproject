@@ -106,7 +106,7 @@ class EmailService {
 
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e9ecef; text-align: center;">
             <p style="color: #8B9DC3; font-size: 14px; margin: 0;">
-              Voices for Frank O'Hara Poetry Archive<br>
+              WeRead Frank O'Hara Poetry Archive<br>
               <a href="${this.baseUrl}" style="color: #4A90E2;">Visit Website</a>
             </p>
           </div>
@@ -143,7 +143,7 @@ class EmailService {
           </p>
           
           <p style="color: #8B9DC3; line-height: 1.6;">
-            We're delighted to let you know that your reading of "<strong>${poemTitle}</strong>" has been approved and is now live on the Voices for Frank O'Hara website.
+            We're delighted to let you know that your reading of "<strong>${poemTitle}</strong>" has been approved and is now live on the WeRead Frank O'Hara website.
           </p>
 
           <div style="text-align: center; margin: 30px 0;">
@@ -159,7 +159,7 @@ class EmailService {
 
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e9ecef; text-align: center;">
             <p style="color: #8B9DC3; font-size: 14px; margin: 0;">
-              Voices for Frank O'Hara Poetry Archive
+              WeRead Frank O'Hara Poetry Archive
             </p>
           </div>
         </div>

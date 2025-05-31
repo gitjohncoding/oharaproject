@@ -41,7 +41,7 @@ export default function Homepage() {
             <span className="text-primary">WeRead</span> <span className="text-foreground">Frank O'Hara</span>
           </h1>
           <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-            This project celebrates the poetry of Frank O'Hara through the diverse voices of readers from around the world. Upload your own reading of his poems and discover how different interpretations bring new life to his words.
+            This project celebrates the poetry of Frank O'Hara through diverse readers from around the world. Upload your own reading of his poems and discover how different interpretations bring new life to his words.
           </p>
           
           {/* Frank O'Hara bio card */}
