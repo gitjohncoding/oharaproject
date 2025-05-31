@@ -1,4 +1,4 @@
-import { poems, submissions, recordings, type Poem, type Submission, type Recording, type InsertPoem, type InsertSubmission, type InsertRecording } from "@shared/schema";
+import { poems, submissions, recordings, favorites, type Poem, type Submission, type Recording, type Favorite, type InsertPoem, type InsertSubmission, type InsertRecording, type InsertFavorite } from "@shared/schema";
 
 export interface IStorage {
   // Poems
@@ -166,10 +166,27 @@ export class MemStorage implements IStorage {
   async deleteRecording(id: number): Promise<boolean> {
     return this.recordings.delete(id);
   }
+
+  // Favorites (stub methods for interface compliance)
+  async getFavoritesByUserId(userId: string): Promise<Favorite[]> {
+    return [];
+  }
+
+  async addFavorite(userId: string, recordingId: number): Promise<Favorite> {
+    throw new Error("MemStorage favorites not implemented");
+  }
+
+  async removeFavorite(userId: string, recordingId: number): Promise<boolean> {
+    return false;
+  }
+
+  async isFavorited(userId: string, recordingId: number): Promise<boolean> {
+    return false;
+  }
 }
 
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export class DatabaseStorage implements IStorage {
   async getPoems(): Promise<Poem[]> {
@@ -228,7 +245,31 @@ export class DatabaseStorage implements IStorage {
 
   async deleteRecording(id: number): Promise<boolean> {
     const result = await db.delete(recordings).where(eq(recordings.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
+  }
+
+  // Favorites
+  async getFavoritesByUserId(userId: string): Promise<Favorite[]> {
+    return await db.select().from(favorites).where(eq(favorites.userId, userId));
+  }
+
+  async addFavorite(userId: string, recordingId: number): Promise<Favorite> {
+    const [favorite] = await db.insert(favorites).values({ userId, recordingId }).returning();
+    return favorite;
+  }
+
+  async removeFavorite(userId: string, recordingId: number): Promise<boolean> {
+    const result = await db.delete(favorites).where(
+      and(eq(favorites.userId, userId), eq(favorites.recordingId, recordingId))
+    );
+    return (result.rowCount || 0) > 0;
+  }
+
+  async isFavorited(userId: string, recordingId: number): Promise<boolean> {
+    const [favorite] = await db.select().from(favorites).where(
+      and(eq(favorites.userId, userId), eq(favorites.recordingId, recordingId))
+    );
+    return !!favorite;
   }
 }
 
