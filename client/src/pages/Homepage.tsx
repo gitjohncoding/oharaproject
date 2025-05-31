@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalLink, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
+import { PoemCard } from "@/components/PoemCard";
+import { PoetFavoriteButton } from "@/components/PoetFavoriteButton";
 import type { Poem } from "@shared/schema";
 
 interface PoemStats {

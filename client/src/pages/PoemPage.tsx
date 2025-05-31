@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { UploadForm } from "@/components/UploadForm";
+import { PoemFavoriteButton } from "@/components/PoemFavoriteButton";
 import type { Poem, Recording } from "@shared/schema";
 
 interface PoemData {
@@ -78,9 +79,14 @@ export default function PoemPage() {
               Back to Poems
             </Button>
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">{poem.title}</h1>
-          <div className="flex flex-wrap items-center gap-4 text-primary-foreground/90">
-            <span>Written in {poem.year}</span>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">{poem.title}</h1>
+              <div className="flex flex-wrap items-center gap-4 text-primary-foreground/90">
+                <span>Written in {poem.year}</span>
+              </div>
+            </div>
+            <PoemFavoriteButton poem={poem} />
           </div>
         </div>
       </div>
