@@ -32,6 +32,7 @@ interface UploadFormProps {
 export function UploadForm({ poemSlug }: UploadFormProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -113,30 +114,27 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
   const handleFileSelect = (file: File) => {
     console.log("File selected:", file.name, file.type, file.size);
     
+    // Clear previous errors
+    setFileError(null);
+    
     // Validate file type
     const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/x-m4a'];
     if (!allowedTypes.includes(file.type)) {
-      toast({
-        title: "Invalid File Type",
-        description: `File type "${file.type}" not supported. Please upload an MP3, WAV, or M4A file.`,
-        variant: "destructive",
-      });
+      const errorMsg = `File type "${file.type}" not supported. Please upload an MP3, WAV, or M4A file.`;
+      setFileError(errorMsg);
       return;
     }
 
     // Validate file size (15MB max)
     if (file.size > 15 * 1024 * 1024) {
-      toast({
-        title: "File Too Large",
-        description: "File size must be less than 15MB.",
-        variant: "destructive",
-      });
+      const errorMsg = "File size must be less than 15MB.";
+      setFileError(errorMsg);
       return;
     }
 
     setSelectedFile(file);
     toast({
-      title: "File Selected",
+      title: "File Ready!",
       description: `${file.name} is ready to upload.`,
     });
   };
@@ -188,11 +186,13 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
 
   const onSubmit = (data: UploadFormData) => {
     if (!selectedFile) {
-      toast({
-        title: "No File Selected",
-        description: "Please select an audio file to upload.",
-        variant: "destructive",
-      });
+      setFileError("Please select an audio file to upload.");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (fileError) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -203,22 +203,46 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {/* File Upload Zone */}
-        <Card>
+        <Card className="overflow-hidden">
           <CardContent className="p-0">
             <div
-              className={`upload-zone rounded-xl p-8 text-center bg-card transition-colors ${
-                dragOver ? 'drag-over' : ''
+              className={`upload-zone rounded-xl p-8 text-center transition-all duration-300 ${
+                dragOver 
+                  ? 'bg-primary/10 border-primary border-2 border-dashed scale-[1.02]' 
+                  : fileError 
+                    ? 'bg-destructive/5 border-destructive/20 border-2 border-dashed'
+                    : selectedFile
+                      ? 'bg-green-50 dark:bg-green-950/20 border-green-300 dark:border-green-700 border-2 border-dashed'
+                      : 'bg-gradient-to-br from-primary/5 to-blue-50 dark:to-blue-950/20 border-primary/20 border-2 border-dashed hover:border-primary/40 hover:bg-primary/10'
               }`}
               onDragOver={handleDragOver}
               onDragEnter={handleDragEnter}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
             >
-              <CloudUpload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">Upload Your Recording</h3>
-              <p className="text-muted-foreground mb-4">
-                {selectedFile ? `Selected: ${selectedFile.name}` : "Choose an audio file or drag and drop here"}
+              <CloudUpload className={`w-16 h-16 mx-auto mb-4 transition-colors ${
+                dragOver ? 'text-primary' : fileError ? 'text-destructive' : selectedFile ? 'text-green-600 dark:text-green-400' : 'text-primary/70'
+              }`} />
+              
+              <h3 className="text-xl font-bold text-foreground mb-2">
+                {dragOver ? "Drop it like it's hot!" : "Join the Conversation"}
+              </h3>
+              
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
+                {dragOver 
+                  ? "Release to add your voice to Frank O'Hara's legacy"
+                  : selectedFile 
+                    ? `✓ Ready to upload: ${selectedFile.name}`
+                    : "Share your unique interpretation and become part of this poetic community"
+                }
               </p>
+
+              {fileError && (
+                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 mb-4 text-sm text-destructive">
+                  {fileError}
+                </div>
+              )}
+              
               <input
                 type="file"
                 id="audioFile"
@@ -227,57 +251,77 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
                 className="hidden"
               />
               <Label htmlFor="audioFile">
-                <Button type="button" className="cursor-pointer" asChild>
+                <Button 
+                  type="button" 
+                  size="lg"
+                  className={`cursor-pointer px-8 py-3 text-base font-semibold transition-all ${
+                    selectedFile ? 'bg-green-600 hover:bg-green-700' : ''
+                  }`} 
+                  asChild
+                >
                   <span>
-                    <Upload className="w-4 h-4 mr-2" />
-                    Choose File
+                    <Upload className="w-5 h-5 mr-2" />
+                    {selectedFile ? "Choose Different File" : "Choose Your Recording"}
                   </span>
                 </Button>
               </Label>
-              <p className="text-xs text-muted-foreground mt-2">
-                MP3, WAV, or M4A • Max 15MB • Max 10 minutes
-              </p>
+              
+              <div className="mt-4 space-y-1">
+                <p className="text-sm text-muted-foreground">
+                  Drop your file here or click to browse
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  MP3, WAV, or M4A • Max 15MB • Perfect length: 2-5 minutes
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Reader Information */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="readerName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Your Name *</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter your name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="space-y-6">
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-foreground mb-2">Tell Us About Yourself</h3>
+            <p className="text-sm text-muted-foreground">Help our community connect with your reading</p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="readerName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Your Name *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="How should we credit you?" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email *</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder="your@email.com" {...field} />
-                </FormControl>
-                <FormMessage />
-                <p className="text-xs text-muted-foreground">For moderation only - not displayed publicly</p>
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email Address *</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="your@email.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                  <p className="text-xs text-muted-foreground">Private - only used for moderation updates</p>
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         <FormField
           control={form.control}
           name="anonymous"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 bg-muted/30 p-4 rounded-lg">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -285,7 +329,8 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>Submit anonymously</FormLabel>
+                <FormLabel>Keep my identity private</FormLabel>
+                <p className="text-xs text-muted-foreground">Your reading will be shared without your name or details</p>
               </div>
             </FormItem>
           )}
@@ -297,11 +342,12 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
             name="location"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Location (optional)</FormLabel>
+                <FormLabel>Where are you reading from? (optional)</FormLabel>
                 <FormControl>
-                  <Input placeholder="City, Country" {...field} />
+                  <Input placeholder="Brooklyn, NY or Tokyo, Japan" {...field} />
                 </FormControl>
                 <FormMessage />
+                <p className="text-xs text-muted-foreground">Share your corner of the world with fellow poetry lovers</p>
               </FormItem>
             )}
           />
@@ -311,11 +357,12 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
             name="background"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Background/Age (optional)</FormLabel>
+                <FormLabel>A bit about you (optional)</FormLabel>
                 <FormControl>
-                  <Input placeholder="Student, age 25" {...field} />
+                  <Input placeholder="Teacher, age 30" {...field} />
                 </FormControl>
                 <FormMessage />
+                <p className="text-xs text-muted-foreground">Help listeners understand your perspective</p>
               </FormItem>
             )}
           />
@@ -326,16 +373,17 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
           name="interpretationNote"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tell us about your reading (optional)</FormLabel>
+              <FormLabel>Share your perspective (optional)</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="What does this poem mean to you? How did you approach reading it?"
+                  placeholder="What drew you to this poem? How did you decide to read it? What emotions or memories does it evoke for you? Your unique perspective adds richness to our community..."
                   className="resize-none"
                   rows={4}
                   {...field}
                 />
               </FormControl>
               <FormMessage />
+              <p className="text-xs text-muted-foreground">Help others understand your connection to Frank O'Hara's words</p>
             </FormItem>
           )}
         />
@@ -363,15 +411,28 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
         />
 
         {/* Submit Button */}
-        <div className="text-center">
+        <div className="text-center space-y-3">
           <Button
             type="submit"
             size="lg"
-            disabled={uploadMutation.isPending}
-            className="px-8"
+            disabled={uploadMutation.isPending || !selectedFile}
+            className="px-12 py-3 text-lg font-semibold"
           >
-            {uploadMutation.isPending ? "Uploading..." : "Submit Recording"}
+            {uploadMutation.isPending ? (
+              <>
+                <CloudUpload className="w-5 h-5 mr-2 animate-pulse" />
+                Uploading Your Voice...
+              </>
+            ) : (
+              <>
+                <Upload className="w-5 h-5 mr-2" />
+                Share Your Reading
+              </>
+            )}
           </Button>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">
+            Your recording will be reviewed and published within 24-48 hours
+          </p>
         </div>
       </form>
     </Form>
