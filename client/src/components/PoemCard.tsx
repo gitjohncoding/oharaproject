@@ -28,7 +28,7 @@ export function PoemCard({ poem, recordingCount }: PoemCardProps) {
         </div>
         <p className="text-muted-foreground mb-4">Written in {poem.year}</p>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          "{poem.context}"
+          {poem.context}
         </p>
         <div className="flex items-center justify-between">
           <span className="text-sm text-primary font-medium">
