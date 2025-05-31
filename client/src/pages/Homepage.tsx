@@ -55,7 +55,10 @@ export default function Homepage() {
                   className="w-24 h-24 md:w-32 md:h-32 rounded-lg object-cover shadow-md flex-shrink-0" 
                 />
                 <div className="flex-1">
-                  <h2 className="text-xl font-semibold text-foreground mb-3">About Frank O'Hara (1926-1966)</h2>
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="text-xl font-semibold text-foreground">About Frank O'Hara (1926-1966)</h2>
+                    <PoetFavoriteButton />
+                  </div>
                   <p className="text-muted-foreground leading-relaxed">
                     Frank O'Hara was a key figure in the New York School of poetry, known for his conversational style and intimate observations of daily life. His poems capture moments of connection, art, and urban experience with remarkable immediacy and warmth.
                   </p>
@@ -73,39 +76,11 @@ export default function Homepage() {
           
           <div className="grid md:grid-cols-2 gap-6">
             {poems?.map((poem) => (
-              <Card key={poem.id} className="hover:shadow-md transition-shadow group">
-                <CardContent className="p-6">
-                  <div className="cursor-pointer" onClick={() => window.location.href = `/poems/${poem.slug}`}>
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {poem.title}
-                      </h3>
-                      <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                    </div>
-                    <p className="text-muted-foreground mb-4">Written in {poem.year}</p>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                      "{poem.context}"
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-primary font-medium">
-                      {statsLoading ? (
-                        <Skeleton className="h-4 w-20" />
-                      ) : (
-                        `${stats?.[poem.slug] || 0} recordings`
-                      )}
-                    </span>
-                    <a 
-                      href={poem.externalLink}
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
-                    >
-                      Read full text <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-                </CardContent>
-              </Card>
+              <PoemCard 
+                key={poem.id} 
+                poem={poem} 
+                recordingCount={statsLoading ? 0 : (stats?.[poem.slug] || 0)} 
+              />
             ))}
           </div>
         </div>
