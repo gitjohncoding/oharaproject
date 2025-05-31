@@ -28,7 +28,7 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
   // Add to favorites mutation
   const addFavoriteMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`/api/favorites/${recording.id}`, {
+      const response = await fetch(`/api/favorites/recordings/${recording.id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -38,7 +38,7 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/favorites"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/favorites/recordings"] });
       toast({
         title: "Added to favorites",
         description: "Recording saved to your favorites.",
@@ -67,7 +67,7 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
   // Remove from favorites mutation
   const removeFavoriteMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`/api/favorites/${recording.id}`, {
+      const response = await fetch(`/api/favorites/recordings/${recording.id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });
@@ -77,7 +77,7 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/favorites"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/favorites/recordings"] });
       toast({
         title: "Removed from favorites",
         description: "Recording removed from your favorites.",
