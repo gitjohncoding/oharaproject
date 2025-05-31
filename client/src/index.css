@@ -371,6 +371,25 @@ audio::-webkit-media-controls-time-remaining-display {
     min-height: 44px;
     min-width: 44px;
   }
+
+  /* Progress bar enhancements for mobile */
+  .audio-progress-bar {
+    padding: 8px 0;
+    cursor: pointer;
+  }
+
+  .audio-control-btn {
+    @apply transition-all duration-200 active:scale-95;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .audio-control-btn:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .audio-control-btn:active {
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
 }
 
 @media (max-width: 768px) {

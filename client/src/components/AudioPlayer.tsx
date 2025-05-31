@@ -256,7 +256,7 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
           {/* Custom Audio Controls */}
           <div className="bg-gradient-to-r from-primary/5 to-blue-50 dark:to-blue-950/20 rounded-lg p-4">
             {/* Progress Bar */}
-            <div className="w-full bg-muted rounded-full h-2 mb-4 cursor-pointer"
+            <div className="audio-progress-bar w-full bg-muted rounded-full h-2 mb-4 cursor-pointer"
                  onClick={(e) => {
                    const rect = e.currentTarget.getBoundingClientRect();
                    const percent = (e.clientX - rect.left) / rect.width;
@@ -278,7 +278,7 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
                   variant="default"
                   size="lg"
                   onClick={togglePlayPause}
-                  className="w-12 h-12 rounded-full flex-shrink-0 touch-manipulation"
+                  className="audio-control-btn w-12 h-12 rounded-full flex-shrink-0 touch-manipulation"
                 >
                   {isPlaying ? (
                     <Pause className="w-5 h-5" />
@@ -295,7 +295,7 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
                   variant="outline"
                   size="lg"
                   onClick={handleReplay}
-                  className="w-12 h-12 rounded-full flex-shrink-0 touch-manipulation hover:bg-primary/10"
+                  className="audio-control-btn w-12 h-12 rounded-full flex-shrink-0 touch-manipulation hover:bg-primary/10"
                 >
                   <RotateCcw className="w-4 h-4" />
                   <span className="sr-only">Replay from beginning</span>
