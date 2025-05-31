@@ -7,6 +7,7 @@ import Navigation from "@/components/Navigation";
 import Homepage from "@/pages/Homepage";
 import PoemPage from "@/pages/PoemPage";
 import AdminPage from "@/pages/AdminPage";
+import ProfilePage from "@/pages/ProfilePage";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -16,6 +17,7 @@ function Router() {
       <Switch>
         <Route path="/" component={Homepage} />
         <Route path="/poems/:slug" component={PoemPage} />
+        <Route path="/profile" component={ProfilePage} />
         <Route path="/admin" component={AdminPage} />
         <Route component={NotFound} />
       </Switch>
