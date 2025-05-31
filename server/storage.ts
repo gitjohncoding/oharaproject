@@ -1,4 +1,4 @@
-import { poems, submissions, recordings, favorites, users, type Poem, type Submission, type Recording, type Favorite, type User, type UpsertUser, type InsertPoem, type InsertSubmission, type InsertRecording, type InsertFavorite } from "@shared/schema";
+import { poems, submissions, recordings, favoriteRecordings, favoritePoems, favoritePoet, users, type Poem, type Submission, type Recording, type FavoriteRecording, type FavoritePoem, type FavoritePoet, type User, type UpsertUser, type InsertPoem, type InsertSubmission, type InsertRecording, type InsertFavoriteRecording, type InsertFavoritePoem, type InsertFavoritePoet } from "@shared/schema";
 
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
@@ -23,11 +23,23 @@ export interface IStorage {
   createRecording(recording: InsertRecording): Promise<Recording>;
   deleteRecording(id: number): Promise<boolean>;
   
-  // Favorites
-  getFavoritesByUserId(userId: string): Promise<Favorite[]>;
-  addFavorite(userId: string, recordingId: number): Promise<Favorite>;
-  removeFavorite(userId: string, recordingId: number): Promise<boolean>;
-  isFavorited(userId: string, recordingId: number): Promise<boolean>;
+  // Recording Favorites
+  getFavoriteRecordingsByUserId(userId: string): Promise<FavoriteRecording[]>;
+  addFavoriteRecording(userId: string, recordingId: number): Promise<FavoriteRecording>;
+  removeFavoriteRecording(userId: string, recordingId: number): Promise<boolean>;
+  isRecordingFavorited(userId: string, recordingId: number): Promise<boolean>;
+  
+  // Poem Favorites
+  getFavoritePoemsByUserId(userId: string): Promise<FavoritePoem[]>;
+  addFavoritePoem(userId: string, poemId: number): Promise<FavoritePoem>;
+  removeFavoritePoem(userId: string, poemId: number): Promise<boolean>;
+  isPoemFavorited(userId: string, poemId: number): Promise<boolean>;
+  
+  // Poet Favorites
+  getFavoritePoetByUserId(userId: string): Promise<FavoritePoet | undefined>;
+  addFavoritePoet(userId: string): Promise<FavoritePoet>;
+  removeFavoritePoet(userId: string): Promise<boolean>;
+  isPoetFavorited(userId: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -180,20 +192,54 @@ export class MemStorage implements IStorage {
     return this.recordings.delete(id);
   }
 
-  // Favorites (stub methods for interface compliance)
-  async getFavoritesByUserId(userId: string): Promise<Favorite[]> {
+  // Recording Favorites (stub methods for interface compliance)
+  async getFavoriteRecordingsByUserId(userId: string): Promise<FavoriteRecording[]> {
     return [];
   }
 
-  async addFavorite(userId: string, recordingId: number): Promise<Favorite> {
+  async addFavoriteRecording(userId: string, recordingId: number): Promise<FavoriteRecording> {
     throw new Error("MemStorage favorites not implemented");
   }
 
-  async removeFavorite(userId: string, recordingId: number): Promise<boolean> {
+  async removeFavoriteRecording(userId: string, recordingId: number): Promise<boolean> {
     return false;
   }
 
-  async isFavorited(userId: string, recordingId: number): Promise<boolean> {
+  async isRecordingFavorited(userId: string, recordingId: number): Promise<boolean> {
+    return false;
+  }
+
+  // Poem Favorites (stub methods)
+  async getFavoritePoemsByUserId(userId: string): Promise<FavoritePoem[]> {
+    return [];
+  }
+
+  async addFavoritePoem(userId: string, poemId: number): Promise<FavoritePoem> {
+    throw new Error("MemStorage favorites not implemented");
+  }
+
+  async removeFavoritePoem(userId: string, poemId: number): Promise<boolean> {
+    return false;
+  }
+
+  async isPoemFavorited(userId: string, poemId: number): Promise<boolean> {
+    return false;
+  }
+
+  // Poet Favorites (stub methods)
+  async getFavoritePoetByUserId(userId: string): Promise<FavoritePoet | undefined> {
+    return undefined;
+  }
+
+  async addFavoritePoet(userId: string): Promise<FavoritePoet> {
+    throw new Error("MemStorage favorites not implemented");
+  }
+
+  async removeFavoritePoet(userId: string): Promise<boolean> {
+    return false;
+  }
+
+  async isPoetFavorited(userId: string): Promise<boolean> {
     return false;
   }
 }
@@ -282,27 +328,72 @@ export class DatabaseStorage implements IStorage {
     return (result.rowCount || 0) > 0;
   }
 
-  // Favorites
-  async getFavoritesByUserId(userId: string): Promise<Favorite[]> {
-    return await db.select().from(favorites).where(eq(favorites.userId, userId));
+  // Recording Favorites
+  async getFavoriteRecordingsByUserId(userId: string): Promise<FavoriteRecording[]> {
+    return await db.select().from(favoriteRecordings).where(eq(favoriteRecordings.userId, userId));
   }
 
-  async addFavorite(userId: string, recordingId: number): Promise<Favorite> {
-    const [favorite] = await db.insert(favorites).values({ userId, recordingId }).returning();
+  async addFavoriteRecording(userId: string, recordingId: number): Promise<FavoriteRecording> {
+    const [favorite] = await db.insert(favoriteRecordings).values({ userId, recordingId }).returning();
     return favorite;
   }
 
-  async removeFavorite(userId: string, recordingId: number): Promise<boolean> {
-    const result = await db.delete(favorites).where(
-      and(eq(favorites.userId, userId), eq(favorites.recordingId, recordingId))
+  async removeFavoriteRecording(userId: string, recordingId: number): Promise<boolean> {
+    const result = await db.delete(favoriteRecordings).where(
+      and(eq(favoriteRecordings.userId, userId), eq(favoriteRecordings.recordingId, recordingId))
     );
     return (result.rowCount || 0) > 0;
   }
 
-  async isFavorited(userId: string, recordingId: number): Promise<boolean> {
-    const [favorite] = await db.select().from(favorites).where(
-      and(eq(favorites.userId, userId), eq(favorites.recordingId, recordingId))
+  async isRecordingFavorited(userId: string, recordingId: number): Promise<boolean> {
+    const [favorite] = await db.select().from(favoriteRecordings).where(
+      and(eq(favoriteRecordings.userId, userId), eq(favoriteRecordings.recordingId, recordingId))
     );
+    return !!favorite;
+  }
+
+  // Poem Favorites
+  async getFavoritePoemsByUserId(userId: string): Promise<FavoritePoem[]> {
+    return await db.select().from(favoritePoems).where(eq(favoritePoems.userId, userId));
+  }
+
+  async addFavoritePoem(userId: string, poemId: number): Promise<FavoritePoem> {
+    const [favorite] = await db.insert(favoritePoems).values({ userId, poemId }).returning();
+    return favorite;
+  }
+
+  async removeFavoritePoem(userId: string, poemId: number): Promise<boolean> {
+    const result = await db.delete(favoritePoems).where(
+      and(eq(favoritePoems.userId, userId), eq(favoritePoems.poemId, poemId))
+    );
+    return (result.rowCount || 0) > 0;
+  }
+
+  async isPoemFavorited(userId: string, poemId: number): Promise<boolean> {
+    const [favorite] = await db.select().from(favoritePoems).where(
+      and(eq(favoritePoems.userId, userId), eq(favoritePoems.poemId, poemId))
+    );
+    return !!favorite;
+  }
+
+  // Poet Favorites
+  async getFavoritePoetByUserId(userId: string): Promise<FavoritePoet | undefined> {
+    const [favorite] = await db.select().from(favoritePoet).where(eq(favoritePoet.userId, userId));
+    return favorite;
+  }
+
+  async addFavoritePoet(userId: string): Promise<FavoritePoet> {
+    const [favorite] = await db.insert(favoritePoet).values({ userId }).returning();
+    return favorite;
+  }
+
+  async removeFavoritePoet(userId: string): Promise<boolean> {
+    const result = await db.delete(favoritePoet).where(eq(favoritePoet.userId, userId));
+    return (result.rowCount || 0) > 0;
+  }
+
+  async isPoetFavorited(userId: string): Promise<boolean> {
+    const [favorite] = await db.select().from(favoritePoet).where(eq(favoritePoet.userId, userId));
     return !!favorite;
   }
 }

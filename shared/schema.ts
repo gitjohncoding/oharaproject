@@ -70,10 +70,23 @@ export const recordings = pgTable("recordings", {
   approvedAt: timestamp("approved_at").defaultNow(),
 });
 
-export const favorites = pgTable("favorites", {
+export const favoriteRecordings = pgTable("favorite_recordings", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull(),
   recordingId: integer("recording_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const favoritePoems = pgTable("favorite_poems", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  poemId: integer("poem_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const favoritePoet = pgTable("favorite_poet", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -99,7 +112,17 @@ export const insertRecordingSchema = createInsertSchema(recordings).omit({
   approvedAt: true,
 });
 
-export const insertFavoriteSchema = createInsertSchema(favorites).omit({
+export const insertFavoriteRecordingSchema = createInsertSchema(favoriteRecordings).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertFavoritePoemSchema = createInsertSchema(favoritePoems).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertFavoritePoetSchema = createInsertSchema(favoritePoet).omit({
   id: true,
   createdAt: true,
 });
@@ -109,8 +132,12 @@ export type User = typeof users.$inferSelect;
 export type Poem = typeof poems.$inferSelect;
 export type Submission = typeof submissions.$inferSelect;
 export type Recording = typeof recordings.$inferSelect;
-export type Favorite = typeof favorites.$inferSelect;
+export type FavoriteRecording = typeof favoriteRecordings.$inferSelect;
+export type FavoritePoem = typeof favoritePoems.$inferSelect;
+export type FavoritePoet = typeof favoritePoet.$inferSelect;
 export type InsertPoem = z.infer<typeof insertPoemSchema>;
 export type InsertSubmission = z.infer<typeof insertSubmissionSchema>;
 export type InsertRecording = z.infer<typeof insertRecordingSchema>;
-export type InsertFavorite = z.infer<typeof insertFavoriteSchema>;
+export type InsertFavoriteRecording = z.infer<typeof insertFavoriteRecordingSchema>;
+export type InsertFavoritePoem = z.infer<typeof insertFavoritePoemSchema>;
+export type InsertFavoritePoet = z.infer<typeof insertFavoritePoetSchema>;

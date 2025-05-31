@@ -18,12 +18,12 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
   const queryClient = useQueryClient();
 
   // Check if recording is favorited
-  const { data: favorites } = useQuery({
-    queryKey: ["/api/favorites"],
+  const { data: recordingFavorites } = useQuery({
+    queryKey: ["/api/favorites/recordings"],
     enabled: isAuthenticated,
   });
 
-  const isFavorited = Array.isArray(favorites) ? favorites.some((fav: any) => fav.recordingId === recording.id) : false;
+  const isFavorited = Array.isArray(recordingFavorites) ? recordingFavorites.some((fav: any) => fav.recordingId === recording.id) : false;
 
   // Add to favorites mutation
   const addFavoriteMutation = useMutation({

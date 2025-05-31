@@ -487,19 +487,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Favorites API endpoints
-  app.get('/api/favorites', isAuthenticated, async (req: any, res) => {
+  // Recording Favorites API
+  app.get('/api/favorites/recordings', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const favorites = await storage.getFavoritesByUserId(userId);
+      const favorites = await storage.getFavoriteRecordingsByUserId(userId);
       res.json(favorites);
     } catch (error) {
-      console.error("Error fetching favorites:", error);
-      res.status(500).json({ message: "Failed to fetch favorites" });
+      console.error("Error fetching recording favorites:", error);
+      res.status(500).json({ message: "Failed to fetch recording favorites" });
     }
   });
 
-  app.post('/api/favorites/:recordingId', isAuthenticated, async (req: any, res) => {
+  app.post('/api/favorites/recordings/:recordingId', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const recordingId = parseInt(req.params.recordingId);
@@ -508,21 +508,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid recording ID" });
       }
 
-      // Check if already favorited
-      const isFavorited = await storage.isFavorited(userId, recordingId);
+      const isFavorited = await storage.isRecordingFavorited(userId, recordingId);
       if (isFavorited) {
         return res.status(409).json({ message: "Recording already in favorites" });
       }
 
-      const favorite = await storage.addFavorite(userId, recordingId);
+      const favorite = await storage.addFavoriteRecording(userId, recordingId);
       res.json(favorite);
     } catch (error) {
-      console.error("Error adding favorite:", error);
-      res.status(500).json({ message: "Failed to add favorite" });
+      console.error("Error adding recording favorite:", error);
+      res.status(500).json({ message: "Failed to add recording favorite" });
     }
   });
 
-  app.delete('/api/favorites/:recordingId', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/favorites/recordings/:recordingId', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const recordingId = parseInt(req.params.recordingId);
@@ -531,15 +530,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid recording ID" });
       }
 
-      const removed = await storage.removeFavorite(userId, recordingId);
+      const removed = await storage.removeFavoriteRecording(userId, recordingId);
       if (!removed) {
-        return res.status(404).json({ message: "Favorite not found" });
+        return res.status(404).json({ message: "Recording favorite not found" });
       }
 
-      res.json({ message: "Favorite removed successfully" });
+      res.json({ message: "Recording favorite removed successfully" });
     } catch (error) {
-      console.error("Error removing favorite:", error);
-      res.status(500).json({ message: "Failed to remove favorite" });
+      console.error("Error removing recording favorite:", error);
+      res.status(500).json({ message: "Failed to remove recording favorite" });
+    }
+  });
+
+  // Poem Favorites API
+  app.get('/api/favorites/poems', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const favorites = await storage.getFavoritePoemsByUserId(userId);
+      res.json(favorites);
+    } catch (error) {
+      console.error("Error fetching poem favorites:", error);
+      res.status(500).json({ message: "Failed to fetch poem favorites" });
+    }
+  });
+
+  app.post('/api/favorites/poems/:poemId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const poemId = parseInt(req.params.poemId);
+      
+      if (isNaN(poemId)) {
+        return res.status(400).json({ message: "Invalid poem ID" });
+      }
+
+      const isFavorited = await storage.isPoemFavorited(userId, poemId);
+      if (isFavorited) {
+        return res.status(409).json({ message: "Poem already in favorites" });
+      }
+
+      const favorite = await storage.addFavoritePoem(userId, poemId);
+      res.json(favorite);
+    } catch (error) {
+      console.error("Error adding poem favorite:", error);
+      res.status(500).json({ message: "Failed to add poem favorite" });
+    }
+  });
+
+  app.delete('/api/favorites/poems/:poemId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const poemId = parseInt(req.params.poemId);
+      
+      if (isNaN(poemId)) {
+        return res.status(400).json({ message: "Invalid poem ID" });
+      }
+
+      const removed = await storage.removeFavoritePoem(userId, poemId);
+      if (!removed) {
+        return res.status(404).json({ message: "Poem favorite not found" });
+      }
+
+      res.json({ message: "Poem favorite removed successfully" });
+    } catch (error) {
+      console.error("Error removing poem favorite:", error);
+      res.status(500).json({ message: "Failed to remove poem favorite" });
+    }
+  });
+
+  // Poet Favorites API
+  app.get('/api/favorites/poet', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const favorite = await storage.getFavoritePoetByUserId(userId);
+      res.json(favorite || null);
+    } catch (error) {
+      console.error("Error fetching poet favorite:", error);
+      res.status(500).json({ message: "Failed to fetch poet favorite" });
+    }
+  });
+
+  app.post('/api/favorites/poet', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+
+      const isFavorited = await storage.isPoetFavorited(userId);
+      if (isFavorited) {
+        return res.status(409).json({ message: "Poet already in favorites" });
+      }
+
+      const favorite = await storage.addFavoritePoet(userId);
+      res.json(favorite);
+    } catch (error) {
+      console.error("Error adding poet favorite:", error);
+      res.status(500).json({ message: "Failed to add poet favorite" });
+    }
+  });
+
+  app.delete('/api/favorites/poet', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+
+      const removed = await storage.removeFavoritePoet(userId);
+      if (!removed) {
+        return res.status(404).json({ message: "Poet favorite not found" });
+      }
+
+      res.json({ message: "Poet favorite removed successfully" });
+    } catch (error) {
+      console.error("Error removing poet favorite:", error);
+      res.status(500).json({ message: "Failed to remove poet favorite" });
     }
   });
 
