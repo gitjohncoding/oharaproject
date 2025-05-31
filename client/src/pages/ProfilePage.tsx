@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { AudioPlayer } from "@/components/AudioPlayer";
+import { PoemFavoriteButton } from "@/components/PoemFavoriteButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, Heart } from "lucide-react";
 import type { Recording, FavoriteRecording, FavoritePoem, FavoritePoet, Poem } from "@shared/schema";
@@ -159,16 +160,19 @@ export default function ProfilePage() {
                   {favoritePoems.map((poem) => (
                     <Card key={poem.id} className="p-4">
                       <div className="flex items-center justify-between">
-                        <div>
+                        <div className="flex-1">
                           <h4 className="font-semibold text-foreground">{poem.title}</h4>
                           <p className="text-sm text-muted-foreground">Published {poem.year}</p>
                         </div>
-                        <a
-                          href={`/poems/${poem.slug}`}
-                          className="text-primary hover:underline font-medium"
-                        >
-                          View Poem
-                        </a>
+                        <div className="flex items-center space-x-3">
+                          <PoemFavoriteButton poem={poem} />
+                          <a
+                            href={`/poems/${poem.slug}`}
+                            className="text-primary hover:underline font-medium"
+                          >
+                            View Poem
+                          </a>
+                        </div>
                       </div>
                     </Card>
                   ))}
