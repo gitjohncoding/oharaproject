@@ -1,0 +1,47 @@
+I need to add user profiles with favorites functionality to my Frank O'Hara poetry website. The authentication system is already built using Replit Auth - I just need to extend it for regular users and add favorites.
+
+EXISTING INFRASTRUCTURE TO LEVERAGE:
+- Replit Auth is already working (see server/replitAuth.ts and useAuth hook)
+- User table exists in shared/schema.ts 
+- Admin auth is working (/admin page)
+- Users table and auth middleware already implemented
+
+WHAT I NEED YOU TO BUILD:
+
+1. DATABASE CHANGES:
+   - Add a "favorites" table to shared/schema.ts linking users to recordings
+   - Schema: id, userId (references users.id), recordingId (references recordings.id), createdAt
+   - Add proper relationships and indexes
+
+2. BACKEND API ENDPOINTS (add to server/routes.ts):
+   - GET /api/favorites - get current user's favorites
+   - POST /api/favorites/:recordingId - add recording to favorites
+   - DELETE /api/favorites/:recordingId - remove from favorites
+   - All endpoints should use the existing isAuthenticated middleware
+
+3. FRONTEND AUTHENTICATION UI:
+   - Add login/logout buttons to the Navigation component
+   - Show user's name when logged in
+   - Use the existing useAuth hook
+   - Login should redirect to /api/login, logout to /api/logout
+
+4. FAVORITES FUNCTIONALITY:
+   - Add heart/favorite button to each AudioPlayer component
+   - Button should toggle filled/unfilled based on favorite status
+   - Use the existing useToast for feedback
+   - Only show to authenticated users
+
+5. USER PROFILE PAGE:
+   - Create new route /profile in App.tsx
+   - New component ProfilePage.tsx showing user's favorites
+   - List favorited recordings with AudioPlayer components
+   - Show "no favorites yet" state
+
+IMPORTANT IMPLEMENTATION NOTES:
+- Reuse existing patterns from AdminPage.tsx for authenticated routes
+- Use existing query patterns from useAuth and admin queries
+- Don't modify the existing auth setup - just expose it to regular users
+- Use existing UI components (Button, Card, etc.) for consistency
+- Follow the mobile-first responsive design patterns already established
+
+The goal is to let any user log in with Replit Auth and save their favorite recordings for later listening.

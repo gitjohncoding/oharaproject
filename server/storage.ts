@@ -18,6 +18,12 @@ export interface IStorage {
   getRecordingsByPoemId(poemId: number): Promise<Recording[]>;
   createRecording(recording: InsertRecording): Promise<Recording>;
   deleteRecording(id: number): Promise<boolean>;
+  
+  // Favorites
+  getFavoritesByUserId(userId: string): Promise<Favorite[]>;
+  addFavorite(userId: string, recordingId: number): Promise<Favorite>;
+  removeFavorite(userId: string, recordingId: number): Promise<boolean>;
+  isFavorited(userId: string, recordingId: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
