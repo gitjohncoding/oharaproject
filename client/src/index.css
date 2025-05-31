@@ -204,6 +204,83 @@
   .loading-pulse {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
+
+  /* Poetry-specific components */
+  .poetry-hero {
+    @apply bg-gradient-to-r from-primary to-blue-600 text-primary-foreground;
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #2563eb 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .poetry-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .voice-gallery {
+    @apply grid gap-6;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+
+  .voice-gallery .audio-player {
+    @apply border border-border/50 hover:border-primary/30 transition-all duration-300;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  }
+
+  .voice-gallery .audio-player:hover {
+    @apply shadow-md;
+    transform: translateY(-2px);
+  }
+
+  .interpretation-note {
+    @apply bg-primary/5 border border-primary/20 rounded-lg p-4 text-sm;
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.05) 0%, hsl(var(--primary) / 0.02) 100%);
+    position: relative;
+  }
+
+  .interpretation-note::before {
+    content: '"';
+    @apply text-primary text-2xl font-serif absolute -top-2 -left-1;
+    line-height: 1;
+  }
+
+  .interpretation-note p {
+    @apply text-foreground/80 italic leading-relaxed m-0;
+  }
+
+  /* Enhanced poem card styling */
+  .poem-card-enhanced {
+    @apply bg-card border border-border rounded-lg p-6 transition-all duration-300;
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
+  }
+
+  .poem-card-enhanced:hover {
+    @apply shadow-lg border-primary/30;
+    transform: translateY(-4px);
+  }
+
+  .poem-card-enhanced .poem-title {
+    @apply text-xl font-semibold text-foreground mb-2 leading-tight;
+  }
+
+  .poem-card-enhanced .poem-meta {
+    @apply text-sm text-muted-foreground mb-3;
+  }
+
+  .poem-card-enhanced .poem-description {
+    @apply text-muted-foreground leading-relaxed mb-4;
+  }
+
+  .poem-card-enhanced .poem-actions {
+    @apply flex items-center justify-between;
+  }
 }
 
 /* Custom audio player styles */
@@ -256,6 +333,32 @@ audio::-webkit-media-controls-time-remaining-display {
   
   h1 {
     @apply text-2xl md:text-3xl;
+  }
+
+  /* Poetry-specific mobile optimizations */
+  .poetry-hero {
+    @apply py-8;
+  }
+
+  .voice-gallery {
+    grid-template-columns: 1fr;
+    @apply gap-4;
+  }
+
+  .poem-card-enhanced {
+    @apply p-4;
+  }
+
+  .poem-card-enhanced .poem-title {
+    @apply text-lg;
+  }
+
+  .interpretation-note {
+    @apply p-3 text-xs;
+  }
+
+  .interpretation-note::before {
+    @apply text-lg -top-1;
   }
 }
 

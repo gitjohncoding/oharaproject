@@ -203,8 +203,8 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
         </audio>
         
         {recording.interpretationNote && (
-          <div className="text-sm text-muted-foreground italic bg-muted p-3 rounded-md">
-            "{recording.interpretationNote}"
+          <div className="interpretation-note">
+            <p>{recording.interpretationNote}</p>
           </div>
         )}
       </CardContent>

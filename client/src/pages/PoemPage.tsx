@@ -71,8 +71,8 @@ export default function PoemPage() {
   return (
     <div className="min-h-screen">
       {/* Poem Header */}
-      <div className="bg-gradient-to-r from-primary to-blue-600 text-primary-foreground">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="poetry-hero">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
           <Link href="/">
             <Button variant="ghost" className="mb-6 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -119,7 +119,7 @@ export default function PoemPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-6">
+            <div className="voice-gallery">
               {recordings.map((recording) => (
                 <AudioPlayer key={recording.id} recording={recording} />
               ))}
