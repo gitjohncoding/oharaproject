@@ -86,6 +86,34 @@ export class MemStorage implements IStorage {
         year: 1960,
         externalLink: "https://www.poetryfoundation.org/poems/42670/ave-maria",
         context: "A playful poem about movies, mothers, and growing up"
+      },
+      {
+        title: "Personal Poem",
+        slug: "personal-poem",
+        year: 1959,
+        externalLink: "https://www.poetryfoundation.org/poems/57554/personal-poem-56d23b2f03a79",
+        context: "A tender reflection on loneliness and connection in everyday moments"
+      },
+      {
+        title: "For Grace, After A Party",
+        slug: "for-grace-after-a-party",
+        year: 1957,
+        externalLink: "https://allpoetry.com/For-Grace,-After-A-Party",
+        context: "A breezy meditation on love, familiarity, and hangovers"
+      },
+      {
+        title: "Poem",
+        slug: "poem-lana-turner-has-collapsed",
+        year: 1962,
+        externalLink: "https://www.poetryfoundation.org/poems/57556/poem-lana-turner-has-collapsed",
+        context: "A humorous response to a newspaper headline that blends pop culture with genuine emotion"
+      },
+      {
+        title: "To the Harbormaster",
+        slug: "to-the-harbormaster",
+        year: 1957,
+        externalLink: "https://www.poetryfoundation.org/poems/42661/to-the-harbormaster",
+        context: "A love poem using maritime imagery to explore themes of devotion and surrender"
       }
     ];
 
