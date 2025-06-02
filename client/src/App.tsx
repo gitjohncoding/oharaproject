@@ -8,6 +8,7 @@ import Homepage from "@/pages/Homepage";
 import PoemPage from "@/pages/PoemPage";
 import AdminPage from "@/pages/AdminPage";
 import ProfilePage from "@/pages/ProfilePage";
+import TermsPage from "@/pages/TermsPage";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
         <Route path="/poems/:slug" component={PoemPage} />
         <Route path="/profile" component={ProfilePage} />
         <Route path="/admin" component={AdminPage} />
+        <Route path="/terms" component={TermsPage} />
         <Route component={NotFound} />
       </Switch>
     </>

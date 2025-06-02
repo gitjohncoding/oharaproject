@@ -402,7 +402,16 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel className="text-sm text-muted-foreground leading-relaxed">
-                  I agree to the terms and conditions and give permission for my recording to be shared on this website. I understand that all submissions are subject to moderation before publication.
+                  I agree to the{" "}
+                  <a 
+                    href="/terms" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:text-primary/80 underline transition-colors"
+                  >
+                    terms and conditions
+                  </a>{" "}
+                  and give permission for my recording to be shared on this website. I understand that all submissions are subject to moderation before publication.
                 </FormLabel>
                 <FormMessage />
               </div>

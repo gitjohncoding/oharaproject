@@ -1,0 +1,151 @@
+Add Terms and Conditions page with routing
+
+I need to add a Terms and Conditions page to my WeRead Frank O'Hara project. Here's what I need:
+
+1. **Create a new route** `/terms` that displays the full Terms and Conditions
+2. **Update the upload form** to make "terms and conditions" a clickable link that opens the T&C page
+3. **Style the T&C page** to match the existing site design (clean, readable, mobile-friendly)
+
+**Implementation details:**
+- The T&C page should open in a new tab/window when clicked from the form
+- Keep the existing checkbox functionality - users still need to check "I agree"
+- Make the T&C page easy to read with proper headings, spacing, and typography
+- Ensure it's mobile-responsive like the rest of the site
+
+**The complete Terms and Conditions text to use:**
+
+# WeRead Frank O'Hara - Terms and Conditions for Audio Submissions
+
+*Last Updated: December 28, 2024*
+
+By submitting an audio recording to WeRead Frank O'Hara ("the Platform"), operated by WeRead, you agree to the following terms and conditions:
+
+## 1. Grant of Rights
+
+By uploading your audio recording, you grant WeRead a **perpetual, irrevocable, worldwide, royalty-free, non-exclusive license** to use your submission in any and all ways, including but not limited to:
+
+### Usage Rights
+- **Display and Distribution**: Publish, display, stream, and distribute your recording on the Platform and associated websites
+- **Educational Use**: Include your recording in educational materials, curricula, and academic research
+- **Promotional Activities**: Use your recording to promote the Platform, Frank O'Hara's poetry, and poetry education generally
+- **Archive and Preservation**: Store your recording permanently as part of a digital poetry archive
+- **Research and Development**: Use your recording for research purposes, including artificial intelligence and machine learning applications
+- **Format Conversion**: Convert, compress, or modify the technical format of your recording while preserving its content
+- **Compilation Works**: Include your recording in compilations, collections, or anthology projects
+- **Third-Party Licensing**: License your recording to educational institutions, researchers, and other platforms that advance poetry appreciation
+
+### Modification Rights
+- Edit your recording for length, audio quality, or technical compatibility
+- Add metadata, captions, or contextual information
+- Create derivative works that incorporate your recording
+
+## 2. Your Representations and Warranties
+
+By submitting your recording, you represent and warrant that:
+
+- You are the original creator of the recording and own all rights to it
+- You have the legal capacity to enter into this agreement
+- Your recording is your original interpretation and performance
+- You have not copied or substantially reproduced another person's reading or interpretation
+- Your submission does not violate any third-party rights
+- You understand that Frank O'Hara's poems may be under copyright protection, and your reading constitutes fair use for educational and transformative purposes
+
+## 3. Content Standards
+
+Your submission must:
+- Be a reading of a Frank O'Hara poem as specified on the Platform
+- Be appropriate for all audiences (no offensive language or content beyond that in the original poem)
+- Meet technical requirements for audio quality and file format
+- Comply with all applicable laws and regulations
+
+## 4. Attribution and Privacy
+
+### Attribution Options
+- You may choose to submit your recording with attribution (your name and optional details)
+- You may choose to submit anonymously
+- Attribution will be provided where practical, but may be omitted in certain uses such as research applications, AI training, or compilations where individual attribution is not feasible
+
+### Privacy
+- Your email address will be used only for moderation communication and will not be publicly displayed or shared with third parties
+- Optional location and background information may be displayed publicly if you choose to provide it
+- We will handle your personal information in accordance with our Privacy Policy
+
+## 5. Moderation and Quality Control
+
+- All submissions are subject to review and approval before publication
+- We reserve the right to reject submissions that don't meet our content or quality standards
+- We may edit submissions for technical quality while preserving artistic interpretation
+- Approved recordings become part of the permanent collection
+
+## 6. No Compensation
+
+This is a community-driven, educational project. You will not receive monetary compensation for your submission, but you will receive:
+- Attribution credit (if desired)
+- The satisfaction of contributing to poetry education and preservation
+- Participation in a unique digital humanities project
+
+## 7. Platform Rights and Responsibilities
+
+### Our Rights
+- Moderate and curate submissions to maintain quality and appropriateness
+- Modify the Platform's features, design, and functionality
+- Establish additional guidelines for submissions
+- Remove or modify content that violates these terms
+
+### Our Responsibilities
+- Make reasonable efforts to preserve your recordings
+- Provide attribution according to your preferences where practical and feasible
+- Operate the Platform in good faith for educational and cultural purposes
+
+## 8. Intellectual Property
+
+- You retain copyright in your original vocal performance
+- The Platform and its operators claim no ownership of your performance itself
+- Frank O'Hara's poems remain subject to their original copyright status
+- The compilation and curation of recordings may be subject to separate copyright protection
+
+## 9. Disclaimer and Limitation of Liability
+
+The Platform is provided "as is" without warranties. WeRead is not liable for:
+- Technical issues that may affect your recording
+- Loss of data or recordings due to technical failures
+- Any disputes arising from the use of your recordings in accordance with these terms
+- Third-party use of recordings that we have properly licensed
+
+## 10. Termination and Survival
+
+- These terms remain in effect permanently for submitted recordings
+- If the Platform discontinues, rights granted to recordings may transfer to educational institutions or poetry preservation organizations
+- Your moral rights as a performer are preserved to the extent required by law
+
+## 11. Updates to Terms
+
+We may update these terms to:
+- Clarify existing provisions
+- Add new use cases that further the educational mission
+- Comply with legal requirements
+- Improve user experience
+
+Material changes will be posted prominently on the Platform. Continued use constitutes acceptance of updated terms.
+
+## 12. Governing Law and Disputes
+
+These terms are governed by Delaware law. Any disputes will be resolved through binding arbitration or in the courts of Delaware.
+
+## 13. Additional Information
+
+For additional information about the Platform, visit the WeRead Frank O'Hara website.
+
+---
+
+**By clicking "I Agree" and submitting your recording, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.**
+
+---
+
+*WeRead Frank O'Hara is a community-driven educational project celebrating poetry through diverse voices. Your participation helps preserve and share Frank O'Hara's work with future generations and advances the intersection of humanities and technology.*
+
+**Current form text to modify:**
+Change from: "I agree to the terms and conditions..." 
+To: "I agree to the [terms and conditions](/terms) and give permission..."
+
+Please implement the route, page template, and update the form link to open in a new tab.
