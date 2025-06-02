@@ -4,9 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle, Clock, Users, ThumbsUp, ThumbsDown } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Users, ThumbsUp, ThumbsDown, Trash2, Music } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface AdminStats {
   pending: number;
@@ -28,6 +39,18 @@ interface PendingSubmission {
   anonymous: boolean;
 }
 
+interface ApprovedRecording {
+  id: number;
+  readerName: string;
+  fileName: string;
+  poemTitle: string;
+  approvedAt: string;
+  anonymous: boolean;
+  location?: string;
+  background?: string;
+  interpretationNote?: string;
+}
+
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState("");
@@ -44,6 +67,11 @@ export default function AdminPage() {
 
   const { data: pendingSubmissions, isLoading: submissionsLoading } = useQuery<PendingSubmission[]>({
     queryKey: ["/api/admin/submissions/pending"],
+    enabled: isAuthenticated,
+  });
+
+  const { data: approvedRecordings, isLoading: recordingsLoading } = useQuery<ApprovedRecording[]>({
+    queryKey: ["/api/admin/recordings"],
     enabled: isAuthenticated,
   });
 
@@ -82,6 +110,27 @@ export default function AdminPage() {
       toast({
         title: "Error",
         description: "Failed to reject submission. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteRecordingMutation = useMutation({
+    mutationFn: (recordingId: number) => 
+      apiRequest("DELETE", `/api/admin/recordings/${recordingId}`),
+    onSuccess: () => {
+      toast({
+        title: "Recording Deleted",
+        description: "The recording has been permanently removed.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/recordings"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/poems/stats"] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete recording. Please try again.",
         variant: "destructive",
       });
     },

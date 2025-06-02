@@ -275,6 +275,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all approved recordings (admin only)
+  app.get("/api/admin/recordings", isAuthenticated, async (req: any, res) => {
+    try {
+      // Check if user is admin
+      const userId = req.user.claims.sub;
+      const adminEmail = 'johntclinkscales@gmail.com';
+      const user = await storage.getUser(userId);
+      
+      if (!user || user.email !== adminEmail) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const recordings = await storage.getRecordings();
+      const poems = await storage.getPoems();
+      
+      const enrichedRecordings = recordings.map(recording => {
+        const poem = poems.find(p => p.id === recording.poemId);
+        return {
+          ...recording,
+          poemTitle: poem?.title || 'Unknown Poem'
+        };
+      });
+
+      res.json(enrichedRecordings);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch recordings" });
+    }
+  });
+
   // Approve submission via email link
   app.get("/api/admin/approve/:token", async (req, res) => {
     try {
@@ -472,6 +501,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Submission rejected successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to reject submission" });
+    }
+  });
+
+  // Delete approved recording (admin only)
+  app.delete("/api/admin/recordings/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      // Check if user is admin
+      const userId = req.user.claims.sub;
+      const adminEmail = 'johntclinkscales@gmail.com';
+      const user = await storage.getUser(userId);
+      
+      if (!user || user.email !== adminEmail) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const recordingId = parseInt(req.params.id);
+      const recordings = await storage.getRecordings();
+      const recording = recordings.find(r => r.id === recordingId);
+
+      if (!recording) {
+        return res.status(404).json({ message: "Recording not found" });
+      }
+
+      // Delete from database (this should also cleanup favorites via foreign key)
+      const success = await storage.deleteRecording(recordingId);
+      
+      if (!success) {
+        return res.status(500).json({ message: "Failed to delete recording from database" });
+      }
+
+      // Delete the physical audio file
+      const filePath = path.join(uploadsDir, recording.fileName);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+
+      res.json({ message: "Recording deleted successfully" });
+    } catch (error) {
+      console.error("Recording deletion error:", error);
+      res.status(500).json({ message: "Failed to delete recording" });
     }
   });
 
