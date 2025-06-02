@@ -77,7 +77,7 @@ export class MemStorage implements IStorage {
         title: "Having a Coke With You",
         slug: "having-a-coke-with-you",
         year: 1960,
-        externalLink: "https://www.poetryfoundation.org/poems/42665/having-a-coke-with-you",
+        externalLink: "https://poets.org/poem/having-coke-you",
         context: "A love poem that captures an intimate moment of urban life"
       },
       {
