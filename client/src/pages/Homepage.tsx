@@ -35,17 +35,26 @@ export default function Homepage() {
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
-      <section className="poetry-hero text-center mb-12">
-        <div className="max-w-4xl mx-auto relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-white">
-            <span className="text-white">WeRead</span> <span className="text-white/90">Frank O'Hara</span>
+      <section className="text-center mb-12">
+        {/* Title above the blue box */}
+        <div className="max-w-4xl mx-auto mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+            <span className="text-primary">WeRead</span> <span className="text-foreground">Frank O'Hara</span>
           </h1>
-          <p className="text-lg text-white/80 mb-8 leading-relaxed">
-            This project celebrates the poetry of Frank O'Hara through diverse readers from around the world. Upload your own reading of his poems and discover how different interpretations bring new life to his words.
-          </p>
-          
-          {/* Frank O'Hara bio card */}
-          <Card className="text-left mb-8 shadow-sm">
+        </div>
+
+        {/* Reduced height blue box */}
+        <div className="poetry-hero py-8 mb-8">
+          <div className="max-w-4xl mx-auto relative z-10">
+            <p className="text-lg text-white/90 mb-6 leading-relaxed">
+              This project celebrates the poetry of Frank O'Hara through diverse readers from around the world. Upload your own reading of his poems and discover how different interpretations bring new life to his words.
+            </p>
+          </div>
+        </div>
+
+        {/* Frank O'Hara bio card */}
+        <div className="max-w-4xl mx-auto">
+          <Card className="text-left shadow-sm">
             <CardContent className="p-6 md:p-8">
               <div className="flex items-start space-x-4">
                 {/* Frank O'Hara portrait */}
