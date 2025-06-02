@@ -18,7 +18,7 @@ export function EnhancedPoemCard({
   className = ""
 }: EnhancedPoemCardProps) {
   return (
-    <Card className={`poem-card-enhanced ${className}`}>
+    <Card className={`poem-card-enhanced ${className} relative`}>
       <CardContent className="p-0">
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
@@ -28,19 +28,21 @@ export function EnhancedPoemCard({
               </h3>
             </Link>
             {showFavorite && (
-              <div className="ml-3">
+              <div className="ml-3 relative z-10">
                 <PoemFavoriteButton poem={poem} />
               </div>
             )}
           </div>
           
-          <div className="poem-meta">
-            Written in {poem.year}
-          </div>
-          
-          <p className="poem-description">
-            {poem.context}
-          </p>
+          <Link href={`/poems/${poem.slug}`} className="block cursor-pointer group">
+            <div className="poem-meta group-hover:text-primary transition-colors">
+              Written in {poem.year}
+            </div>
+            
+            <p className="poem-description group-hover:text-foreground/80 transition-colors">
+              {poem.context}
+            </p>
+          </Link>
           
           <div className="poem-actions">
             <div className="flex items-center space-x-4">
@@ -52,7 +54,7 @@ export function EnhancedPoemCard({
                 href={poem.externalLink}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 relative z-10"
                 onClick={(e) => e.stopPropagation()}
               >
                 Read full text <ExternalLink className="w-3 h-3" />

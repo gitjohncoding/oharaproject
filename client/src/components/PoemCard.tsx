@@ -11,7 +11,7 @@ interface PoemCardProps {
 
 export function PoemCard({ poem, recordingCount }: PoemCardProps) {
   return (
-    <Card className="hover:shadow-md transition-shadow group">
+    <Card className="hover:shadow-md transition-shadow group relative">
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-4">
           <Link href={`/poems/${poem.slug}`} className="flex-1 cursor-pointer">
@@ -19,17 +19,21 @@ export function PoemCard({ poem, recordingCount }: PoemCardProps) {
               {poem.title}
             </h3>
           </Link>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 relative z-10">
             <PoemFavoriteButton poem={poem} />
             <Link href={`/poems/${poem.slug}`}>
               <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors cursor-pointer" />
             </Link>
           </div>
         </div>
-        <p className="text-muted-foreground mb-4">Written in {poem.year}</p>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          {poem.context}
-        </p>
+        
+        <Link href={`/poems/${poem.slug}`} className="block cursor-pointer group">
+          <p className="text-muted-foreground mb-4 group-hover:text-primary transition-colors">Written in {poem.year}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4 group-hover:text-foreground/80 transition-colors">
+            {poem.context}
+          </p>
+        </Link>
+        
         <div className="flex items-center justify-between">
           <span className="text-sm text-primary font-medium">
             {recordingCount} recording{recordingCount !== 1 ? 's' : ''}
@@ -38,7 +42,7 @@ export function PoemCard({ poem, recordingCount }: PoemCardProps) {
             href={poem.externalLink}
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+            className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 relative z-10"
             onClick={(e) => e.stopPropagation()}
           >
             Read full text <ExternalLink className="w-3 h-3" />
