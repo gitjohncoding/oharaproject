@@ -371,6 +371,111 @@ export default function AdminPage() {
             )}
           </CardContent>
         </Card>
+
+        {/* Approved Recordings Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Music className="w-5 h-5" />
+              Approved Recordings
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {recordingsLoading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="border rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="space-y-2">
+                        <Skeleton className="h-5 w-32" />
+                        <Skeleton className="h-4 w-48" />
+                        <Skeleton className="h-3 w-24" />
+                      </div>
+                      <Skeleton className="h-8 w-20" />
+                    </div>
+                    <Skeleton className="h-12 w-full" />
+                  </div>
+                ))}
+              </div>
+            ) : approvedRecordings?.length === 0 ? (
+              <div className="text-center py-8">
+                <Music className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-lg font-medium text-foreground mb-2">No recordings yet</p>
+                <p className="text-muted-foreground">Approved recordings will appear here.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {approvedRecordings?.map((recording) => (
+                  <div key={recording.id} className="border rounded-lg p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-medium text-foreground">
+                            {recording.anonymous ? "Anonymous Reader" : recording.readerName}
+                          </h3>
+                          {recording.anonymous && (
+                            <Badge variant="secondary" className="text-xs">Anonymous</Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-1">{recording.poemTitle}</p>
+                        <p className="text-xs text-muted-foreground">
+                          Approved: {new Date(recording.approvedAt).toLocaleDateString()}
+                        </p>
+                        {recording.location && (
+                          <p className="text-xs text-muted-foreground">📍 {recording.location}</p>
+                        )}
+                        {recording.background && (
+                          <p className="text-xs text-muted-foreground">👤 {recording.background}</p>
+                        )}
+                      </div>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            disabled={deleteRecordingMutation.isPending}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Recording</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to permanently delete this recording by{" "}
+                              {recording.anonymous ? "Anonymous Reader" : recording.readerName}{" "}
+                              for "{recording.poemTitle}"? This action cannot be undone and will also remove any favorites associated with this recording.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => deleteRecordingMutation.mutate(recording.id)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Delete Recording
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                    
+                    <audio controls className="w-full mb-3">
+                      <source src={`/api/recordings/${recording.fileName}`} type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                    
+                    {recording.interpretationNote && (
+                      <div className="text-sm text-muted-foreground italic bg-muted p-3 rounded-md">
+                        "{recording.interpretationNote}"
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
