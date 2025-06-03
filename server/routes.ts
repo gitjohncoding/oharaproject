@@ -60,23 +60,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve uploaded files with proper MIME types
   app.use('/uploads', (req, res, next) => {
-    // Add CORS headers for audio files
+    // Add CORS headers
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.header('Accept-Ranges', 'bytes');
     
-    // Set proper MIME type based on file extension
-    const filePath = req.path.toLowerCase();
-    if (filePath.endsWith('.mp3')) {
-      res.setHeader('Content-Type', 'audio/mpeg');
-    } else if (filePath.endsWith('.m4a')) {
-      res.setHeader('Content-Type', 'audio/mp4');
-    } else if (filePath.endsWith('.wav')) {
-      res.setHeader('Content-Type', 'audio/wav');
+    // Set proper MIME types for audio files
+    if (req.path.endsWith('.mp3')) {
+      res.type('audio/mpeg');
+    } else if (req.path.endsWith('.m4a')) {
+      res.type('audio/mp4');
+    } else if (req.path.endsWith('.wav')) {
+      res.type('audio/wav');
     }
     
     next();
   }, express.static(uploadsDir));
+
+  // Add debug route to test file serving
+  app.get('/test-audio/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(uploadsDir, filename);
+    console.log('Trying to serve:', filePath);
+    console.log('File exists:', fs.existsSync(filePath));
+    
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: "File not found" });
+    }
+    
+    // Set proper MIME type
+    if (filename.endsWith('.mp3')) {
+      res.type('audio/mpeg');
+    } else if (filename.endsWith('.m4a')) {
+      res.type('audio/mp4');
+    } else if (filename.endsWith('.wav')) {
+      res.type('audio/wav');
+    }
+    
+    res.sendFile(filePath);
+  });
 
   // Serve attached assets
   const attachedAssetsDir = path.join(process.cwd(), "attached_assets");

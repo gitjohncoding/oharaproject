@@ -357,7 +357,7 @@ export default function AdminPage() {
                       preload="metadata"
                     >
                       <source 
-                        src={`/api/recordings/${submission.fileName}`} 
+                        src={`/uploads/${submission.fileName}`} 
                         type={
                           submission.fileName.endsWith('.mp3') ? 'audio/mpeg' :
                           submission.fileName.endsWith('.m4a') ? 'audio/mp4' :
