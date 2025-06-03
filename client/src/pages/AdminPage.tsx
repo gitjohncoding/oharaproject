@@ -360,7 +360,7 @@ export default function AdminPage() {
                     >
                       <source 
                         src={submission.cloudinaryUrl || `/uploads/${submission.fileName}`} 
-                        type="audio/mpeg"
+                        type={submission.mimeType || "audio/mpeg"}
                       />
                       Your browser does not support the audio element.
                     </audio>
@@ -468,7 +468,7 @@ export default function AdminPage() {
                     <audio controls className="w-full mb-3">
                       <source 
                         src={recording.cloudinaryUrl || `/uploads/${recording.fileName}`} 
-                        type="audio/mpeg"
+                        type={recording.mimeType || "audio/mpeg"}
                       />
                       Your browser does not support the audio element.
                     </audio>

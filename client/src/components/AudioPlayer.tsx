@@ -251,7 +251,7 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
           >
             <source 
               src={recording.cloudinaryUrl || `/uploads/${recording.fileName}`} 
-              type="audio/mpeg"
+              type={recording.mimeType || "audio/mpeg"}
             />
             Your browser does not support the audio element.
           </audio>

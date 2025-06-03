@@ -117,9 +117,14 @@ export function UploadForm({ poemSlug }: UploadFormProps) {
     // Clear previous errors
     setFileError(null);
     
-    // Validate file type
-    const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/x-m4a'];
-    if (!allowedTypes.includes(file.type)) {
+    // Validate file type - support MP3, WAV, M4A with comprehensive MIME type detection
+    const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/x-m4a', 'audio/mp3'];
+    const allowedExtensions = ['.mp3', '.wav', '.m4a'];
+    const fileExtension = file.name.toLowerCase().split('.').pop() || '';
+    
+    const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(`.${fileExtension}`);
+    
+    if (!isValidType) {
       const errorMsg = `File type "${file.type}" not supported. Please upload an MP3, WAV, or M4A file.`;
       setFileError(errorMsg);
       return;
