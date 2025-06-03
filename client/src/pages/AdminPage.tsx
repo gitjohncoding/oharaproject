@@ -470,7 +470,7 @@ export default function AdminPage() {
                     
                     <audio controls className="w-full mb-3">
                       <source 
-                        src={`/api/recordings/${recording.fileName}`} 
+                        src={`/uploads/${recording.fileName}`} 
                         type={
                           recording.fileName.endsWith('.mp3') ? 'audio/mpeg' :
                           recording.fileName.endsWith('.m4a') ? 'audio/mp4' :
