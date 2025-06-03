@@ -136,7 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             if (error) reject(error);
             else resolve(result);
           }
-        ).end(req.file.buffer);
+        ).end(req.file!.buffer);
       });
 
       const cloudinaryResult = uploadResult as any;
@@ -158,9 +158,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         anonymous: req.body.anonymous === 'true',
         fileName: cloudinaryResult.public_id,
         cloudinaryUrl: cloudinaryResult.secure_url,
-        originalFileName: req.file.originalname,
-        fileSize: req.file.size,
-        mimeType: req.file.mimetype,
+        originalFileName: req.file!.originalname,
+        fileSize: req.file!.size,
+        mimeType: req.file!.mimetype,
         approvalToken: uuidv4(),
       };
 

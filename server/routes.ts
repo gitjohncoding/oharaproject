@@ -12,8 +12,24 @@ import { insertSubmissionSchema } from "@shared/schema";
 import { z } from "zod";
 import { v2 as cloudinary } from 'cloudinary';
 
-// Configure multer for memory storage (Cloudinary upload)
-const storage_multer = multer.memoryStorage();
+// Ensure uploads directory exists
+const uploadsDir = path.join(process.cwd(), "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Configure multer for file uploads
+const storage_multer = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const uuid = uuidv4().slice(0, 8);
+    const ext = path.extname(file.originalname);
+    cb(null, `${timestamp}-${uuid}${ext}`);
+  }
+});
 
 const upload = multer({
   storage: storage_multer,

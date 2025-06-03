@@ -102,7 +102,6 @@ export const insertSubmissionSchema = createInsertSchema(submissions).omit({
   submittedAt: true,
   reviewedAt: true,
 }).extend({
-  poemSlug: z.string(),
   location: z.string().optional().transform(val => val || undefined),
   background: z.string().optional().transform(val => val || undefined),
   interpretationNote: z.string().optional().transform(val => val || undefined),
