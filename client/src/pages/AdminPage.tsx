@@ -35,6 +35,7 @@ interface PendingSubmission {
   interpretationNote?: string;
   fileName: string;
   cloudinaryUrl?: string;
+  mimeType?: string;
   poemTitle: string;
   submittedAt: string;
   anonymous: boolean;
@@ -45,6 +46,7 @@ interface ApprovedRecording {
   readerName: string;
   fileName: string;
   cloudinaryUrl?: string;
+  mimeType?: string;
   poemTitle: string;
   approvedAt: string;
   anonymous: boolean;
