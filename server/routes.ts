@@ -37,7 +37,7 @@ const upload = multer({
   },
   fileFilter: (req, file, cb) => {
     console.log("File filter check - file type:", file.mimetype);
-    const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/x-m4a'];
+    const allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/mp4', 'audio/x-m4a', 'audio/m4a'];
     if (allowedTypes.includes(file.mimetype)) {
       console.log("File type accepted");
       cb(null, true);
@@ -58,11 +58,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   });
 
-  // Serve uploaded files
+  // Serve uploaded files with proper MIME types
   app.use('/uploads', (req, res, next) => {
     // Add CORS headers for audio files
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Accept-Ranges', 'bytes');
+    
+    // Set proper MIME type based on file extension
+    const filePath = req.path.toLowerCase();
+    if (filePath.endsWith('.mp3')) {
+      res.setHeader('Content-Type', 'audio/mpeg');
+    } else if (filePath.endsWith('.m4a')) {
+      res.setHeader('Content-Type', 'audio/mp4');
+    } else if (filePath.endsWith('.wav')) {
+      res.setHeader('Content-Type', 'audio/wav');
+    }
+    
     next();
   }, express.static(uploadsDir));
 
@@ -107,6 +119,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch recordings" });
     }
+  });
+
+  // Serve individual recordings with proper headers
+  app.get("/api/recordings/:filename", (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(uploadsDir, filename);
+    
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: "Recording not found" });
+    }
+    
+    // Set proper MIME type based on file extension
+    const ext = path.extname(filename).toLowerCase();
+    let contentType = 'audio/mpeg'; // default
+    
+    switch (ext) {
+      case '.mp3':
+        contentType = 'audio/mpeg';
+        break;
+      case '.m4a':
+        contentType = 'audio/mp4';
+        break;
+      case '.wav':
+        contentType = 'audio/wav';
+        break;
+    }
+    
+    // Set headers for proper audio streaming
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Accept-Ranges', 'bytes');
+    res.setHeader('Cache-Control', 'public, max-age=31536000');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    
+    // Send the file
+    res.sendFile(filePath);
   });
 
   // Get poem by slug with recordings
