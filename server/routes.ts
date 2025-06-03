@@ -10,7 +10,6 @@ import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 import { insertSubmissionSchema } from "@shared/schema";
 import { z } from "zod";
-import { v2 as cloudinary } from 'cloudinary';
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(process.cwd(), "uploads");
