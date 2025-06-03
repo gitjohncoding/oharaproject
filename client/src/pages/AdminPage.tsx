@@ -34,6 +34,7 @@ interface PendingSubmission {
   background?: string;
   interpretationNote?: string;
   fileName: string;
+  cloudinaryUrl?: string;
   poemTitle: string;
   submittedAt: string;
   anonymous: boolean;
@@ -43,6 +44,7 @@ interface ApprovedRecording {
   id: number;
   readerName: string;
   fileName: string;
+  cloudinaryUrl?: string;
   poemTitle: string;
   approvedAt: string;
   anonymous: boolean;
@@ -357,13 +359,8 @@ export default function AdminPage() {
                       preload="metadata"
                     >
                       <source 
-                        src={`/uploads/${submission.fileName}`} 
-                        type={
-                          submission.fileName.endsWith('.mp3') ? 'audio/mpeg' :
-                          submission.fileName.endsWith('.m4a') ? 'audio/mp4' :
-                          submission.fileName.endsWith('.wav') ? 'audio/wav' :
-                          'audio/mpeg'
-                        } 
+                        src={submission.cloudinaryUrl || `/uploads/${submission.fileName}`} 
+                        type="audio/mpeg"
                       />
                       Your browser does not support the audio element.
                     </audio>
@@ -470,13 +467,8 @@ export default function AdminPage() {
                     
                     <audio controls className="w-full mb-3">
                       <source 
-                        src={`/uploads/${recording.fileName}`} 
-                        type={
-                          recording.fileName.endsWith('.mp3') ? 'audio/mpeg' :
-                          recording.fileName.endsWith('.m4a') ? 'audio/mp4' :
-                          recording.fileName.endsWith('.wav') ? 'audio/wav' :
-                          'audio/mpeg'
-                        } 
+                        src={recording.cloudinaryUrl || `/uploads/${recording.fileName}`} 
+                        type="audio/mpeg"
                       />
                       Your browser does not support the audio element.
                     </audio>
