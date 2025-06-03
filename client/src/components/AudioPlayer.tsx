@@ -249,7 +249,10 @@ export function AudioPlayer({ recording }: AudioPlayerProps) {
             onPause={handlePause}
             className="hidden"
           >
-            <source src={`/uploads/${recording.fileName}`} type={recording.mimeType} />
+            <source 
+              src={`/uploads/${recording.fileName}`} 
+              type={recording.mimeType === 'audio/x-m4a' ? 'audio/mp4' : recording.mimeType} 
+            />
             Your browser does not support the audio element.
           </audio>
 

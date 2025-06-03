@@ -356,7 +356,15 @@ export default function AdminPage() {
                       className="w-full mb-2"
                       preload="metadata"
                     >
-                      <source src={`/uploads/${submission.fileName}`} type="audio/mpeg" />
+                      <source 
+                        src={`/uploads/${submission.fileName}`} 
+                        type={
+                          submission.fileName.endsWith('.mp3') ? 'audio/mpeg' :
+                          submission.fileName.endsWith('.m4a') ? 'audio/mp4' :
+                          submission.fileName.endsWith('.wav') ? 'audio/wav' :
+                          'audio/mpeg'
+                        } 
+                      />
                       Your browser does not support the audio element.
                     </audio>
                     
@@ -461,7 +469,15 @@ export default function AdminPage() {
                     </div>
                     
                     <audio controls className="w-full mb-3">
-                      <source src={`/api/recordings/${recording.fileName}`} type="audio/mpeg" />
+                      <source 
+                        src={`/api/recordings/${recording.fileName}`} 
+                        type={
+                          recording.fileName.endsWith('.mp3') ? 'audio/mpeg' :
+                          recording.fileName.endsWith('.m4a') ? 'audio/mp4' :
+                          recording.fileName.endsWith('.wav') ? 'audio/wav' :
+                          'audio/mpeg'
+                        } 
+                      />
                       Your browser does not support the audio element.
                     </audio>
                     
